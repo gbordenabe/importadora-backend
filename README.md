@@ -3,7 +3,7 @@
 </p>
 
 
-#Teslo API
+#API
 
 
 1. Clonar proyecto
