@@ -1,10 +1,7 @@
-
-
-
 export enum ValidRoles {
-    admin = 'admin',
-    superUser = 'super-user',
-    user = 'user',
-    treasurer = 'treasurer',
-    seller = 'seller'
+  admin = 'admin',
+  user = 'user',
+
+  vendedor = 'vendedor',
+  tesorero = 'tesorero',
 }

@@ -6,6 +6,13 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 async function main() {
   const app = await NestFactory.create(AppModule);
   // app.setGlobalPrefix('api');
+  // Configurar CORS
+  app.enableCors({
+    origin: '*', // Reemplaza con tu URL permitida
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept,Authorization',
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({

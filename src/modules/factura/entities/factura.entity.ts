@@ -12,7 +12,8 @@ export class Factura {
 
   @Column({ type: 'decimal', scale: 2, default: 0.0 })
   amount: number;
-
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  fecha: Date;
   @Column()
   obs?: string;
 

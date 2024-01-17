@@ -9,8 +9,9 @@ export class TipoFactura {
   @Column()
   name: string;
 
-  @OneToMany(
-    () => Factura, 
-    (factura) => factura.tipoFact)
-    factura: Factura;
+  @OneToMany(() => Factura, (factura) => factura.tipoFact)
+  factura: Factura;
+
+  @Column({ type: 'bool' })
+  isActive: boolean;
 }

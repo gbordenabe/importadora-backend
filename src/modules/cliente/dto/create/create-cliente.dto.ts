@@ -1,27 +1,21 @@
-import { IsString } from "class-validator";
+import { IsString } from 'class-validator';
 
 export class CreateClienteDto {
+  @IsString()
+  name: string;
 
-    @IsString()
-    name: string;
+  @IsString()
+  businessName: string;
 
-    @IsString()
-    businessName: string;
+  @IsString()
+  cuit_cuil: string;
 
-    /*eliminar porque es auto increment */
-    @IsString()
-    number_client: string;
+  @IsString()
+  city: string;
 
-    @IsString()
-    cuit_cuil: string;
+  @IsString()
+  location: string;
 
-    @IsString()
-    city: string;
-
-    @IsString()
-    location: string;
-
-    @IsString()
-    province: string;
-
+  @IsString()
+  province: string;
 }

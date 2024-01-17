@@ -7,6 +7,15 @@ import { ClienteModule } from './modules/cliente/cliente.module';
 import { TransaccionModule } from './modules/transaccion/transaccion.module';
 import { FacturaModule } from './modules/factura/factura.module';
 import { TipoFacturaModule } from './modules/tipo-factura/tipo-factura.module';
+import { PagosModule } from './modules/pagos/pagos.module';
+import { TipoPagoModule } from './modules/tipo-pago/tipo-pago.module';
+import { EstadoTransaccionModule } from './modules/estado-transaccion/estado-transaccion.module';
+import { SubTipoPagoModule } from './modules/sub-tipo-pago/sub-tipo-pago.module';
+import { SaldosModule } from './modules/saldos/saldos.module';
+import { TipoSaldosModule } from './modules/tipo-saldos/tipo-saldos.module';
+import { SubTipoSaldosModule } from './modules/sub-tipo-saldos/sub-tipo-saldos.module';
+import { UsuariosModule } from './modules/usuarios/usuarios.module';
+import { EmailModule } from './modules/email/email.module';
 
 @Module({
   imports: [
@@ -26,7 +35,16 @@ import { TipoFacturaModule } from './modules/tipo-factura/tipo-factura.module';
     ClienteModule,
     TransaccionModule,
     FacturaModule,
-    TipoFacturaModule
+    TipoFacturaModule,
+    PagosModule,
+    TipoPagoModule,
+    EstadoTransaccionModule,
+    SubTipoPagoModule,
+    SaldosModule,
+    TipoSaldosModule,
+    SubTipoSaldosModule,
+    UsuariosModule,
+    EmailModule
   ],
   controllers: [],
   providers: [],

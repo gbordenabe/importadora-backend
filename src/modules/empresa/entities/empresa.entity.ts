@@ -28,8 +28,8 @@ export class Empresa {
   @Column({ type: 'timestamp', default: null })
   dateDelete: Date | null;
 
-  @OneToMany(
-    () => Transaccion, 
-    (transaccion) => transaccion.empresa)
-  transacciones: Transaccion;
+  // @OneToMany(
+  //   () => Transaccion, 
+  //   (transaccion) => transaccion.empresa)
+  // transacciones: Transaccion;
 }

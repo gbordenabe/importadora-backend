@@ -23,6 +23,12 @@ export class User {
   @Column('text')
   password: string;
 
+  @Column('text', { nullable: true })
+  tipo_Usuario: 'CLIENTE' | 'TESORERO' | 'EMPRESA' | 'VENDEDOR';
+
+  @Column('text', { nullable: true })
+  email: string;
+
   @Column('text')
   city?: string;
 

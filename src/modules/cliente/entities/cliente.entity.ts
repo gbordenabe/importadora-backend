@@ -12,7 +12,6 @@ export class Cliente {
   @Column()
   businessName: string;
 
-  /*Colocarle el auto increment*/
   @Column()
   number_client: string;
 
@@ -40,8 +39,6 @@ export class Cliente {
   @Column({ type: 'timestamp', default: null })
   dateDelete: Date | null;
 
-  @OneToMany(
-    () => Transaccion, 
-    (transaccion) => transaccion.cliente)
-  transacciones: Transaccion;
+  // @OneToMany(() => Transaccion, (transaccion) => transaccion.cliente)
+  // transacciones: Transaccion;
 }
