@@ -29,6 +29,15 @@ import { EmailModule } from './modules/email/email.module';
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,
       synchronize: true, //Para evitar borrar los datos activar el false
+      ssl: process.env.DB_SSL === 'true',
+      extra: {
+        ssl:
+          process.env.DB_SSL === 'true'
+            ? {
+                rejectUnauthorized: false,
+              }
+            : null,
+      },
     }),
     EmpresaModule,
     AuthModule,
@@ -44,7 +53,7 @@ import { EmailModule } from './modules/email/email.module';
     TipoSaldosModule,
     SubTipoSaldosModule,
     UsuariosModule,
-    EmailModule
+    EmailModule,
   ],
   controllers: [],
   providers: [],

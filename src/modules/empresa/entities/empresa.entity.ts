@@ -8,7 +8,7 @@ export class Empresa {
   id: string;
 
   @Column()
-  number: string;
+  number?: string;
 
   @Column()
   name: string;

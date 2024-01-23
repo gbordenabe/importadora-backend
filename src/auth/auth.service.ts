@@ -98,7 +98,14 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({
       where: { username },
-      select: { username: true, password: true, id: true }, //! OJO!
+      select: {
+        username: true,
+        password: true,
+        id: true,
+        name: true,
+        lastname: true,
+        roles: true,
+      }, //! OJO!
     });
 
     if (!user)
