@@ -1,0 +1,5 @@
+export enum CHECK_TYPE_ENUM {
+  OWN = 'OWN',
+  THIRD_PARTY = 'THIRD_PARTY',
+  ELECTRONIC = 'ELECTRONIC',
+}

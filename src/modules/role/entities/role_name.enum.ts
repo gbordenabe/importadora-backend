@@ -1,0 +1,4 @@
+export enum ROLE_NAME_ENUM {
+  SELLER = 'SELLER',
+  TREASURER = 'TREASURER',
+}
