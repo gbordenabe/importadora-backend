@@ -32,9 +32,6 @@ export class DatabaseService implements OnModuleInit {
     const user = await this.userRepository.findOneBy({ user_name });
     if (!user) {
       const password = process.env.FIRST_USER_PASSWORD;
-      console.log('Creating first user');
-      console.log('user_name: ', user_name);
-      console.log('password: ', password);
       await this.userRepository.save({
         user_name,
         password: Encrypter.encrypt(password),

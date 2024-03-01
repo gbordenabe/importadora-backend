@@ -42,4 +42,9 @@ export class CreateCheckDto implements CreatePaymentDto {
   @AllowNulls()
   @IsOptional()
   bank_name: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  file_field_name: string;
 }

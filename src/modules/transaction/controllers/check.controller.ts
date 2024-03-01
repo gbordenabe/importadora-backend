@@ -1,12 +1,16 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Head,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  StreamableFile,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CheckService } from '../services/check.service';
 import { Auth, GetUser } from 'src/auth/decorators';
@@ -24,6 +28,8 @@ import { ROLE_NAME_ENUM } from 'src/modules/role/entities/role_name.enum';
 import { UpdateCheckDto } from '../dtos/update/update-check.dto';
 import { TRANSACTION_STATUS_ENUM } from '../entities/enum/transaction-status-.enum';
 import { ItemRequestToChangeDto } from '../dtos/update/item-request-to-change.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ParseTransactionItemFileValidation } from 'src/storage-service/pipe/file-validation.pipe';
 
 @ApiTags('Check')
 @ApiBadRequestResponseImplementation()
@@ -32,6 +38,39 @@ import { ItemRequestToChangeDto } from '../dtos/update/item-request-to-change.dt
 @Controller('check')
 export class CheckController {
   constructor(private readonly checkService: CheckService) {}
+
+  @ApiOkResponseImplementation()
+  @ApiNotFoundImplementation()
+  @Auth()
+  @Get('mine/file/:checkId')
+  async getMyFileByCashId(
+    @Param('checkId', ParseIntPipe) id: number,
+    @GetUser() requestUser: User,
+  ) {
+    return new StreamableFile(
+      await this.checkService.getFileByCheckId(id, {
+        requestUser,
+        isAdministrator: false,
+      }),
+    );
+  }
+
+  @ApiOkResponseImplementation()
+  @ApiNotFoundImplementation()
+  @ApiForbiddenResponseImplementation()
+  @Auth(ROLE_NAME_ENUM.TREASURER)
+  @Get('file/:checkId')
+  async getFileByCashId(
+    @Param('checkId', ParseIntPipe) id: number,
+    @GetUser() requestUser: User,
+  ) {
+    return new StreamableFile(
+      await this.checkService.getFileByCheckId(id, {
+        requestUser,
+        isAdministrator: true,
+      }),
+    );
+  }
 
   @ApiOkResponseImplementation({ type: Check })
   @ApiNotFoundImplementation()
@@ -55,33 +94,47 @@ export class CheckController {
 
   @ApiOkResponseImplementation({ type: Check })
   @ApiNotFoundImplementation()
+  @UseInterceptors(FileInterceptor('file'))
   @Auth()
   @Patch('mine/:id')
   async updateOneOfMineById(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateCheckDto,
     @GetUser() requestUser: User,
+    @UploadedFile(ParseTransactionItemFileValidation) file: Express.Multer.File,
   ) {
-    return await this.checkService.updateOneById(id, dto, {
-      requestUser,
-      isAdministrator: false,
-    });
+    return await this.checkService.updateOneById(
+      id,
+      dto,
+      {
+        requestUser,
+        isAdministrator: false,
+      },
+      file,
+    );
   }
 
   @ApiOkResponseImplementation({ type: Check })
   @ApiNotFoundImplementation()
   @ApiForbiddenResponseImplementation()
+  @UseInterceptors(FileInterceptor('file'))
   @Auth(ROLE_NAME_ENUM.TREASURER)
   @Patch(':id')
   async updateOneById(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateCheckDto,
     @GetUser() requestUser: User,
+    @UploadedFile(ParseTransactionItemFileValidation) file: Express.Multer.File,
   ) {
-    return await this.checkService.updateOneById(id, dto, {
-      requestUser,
-      isAdministrator: true,
-    });
+    return await this.checkService.updateOneById(
+      id,
+      dto,
+      {
+        requestUser,
+        isAdministrator: true,
+      },
+      file,
+    );
   }
 
   @ApiOkResponseImplementation()
@@ -116,5 +169,34 @@ export class CheckController {
       TRANSACTION_STATUS_ENUM.OK,
       requestUser,
     );
+  }
+
+  @ApiOkResponseImplementation()
+  @ApiNotFoundImplementation()
+  @Auth()
+  @Delete('mine/file/:checkId')
+  async deleteMyFileByCashId(
+    @Param('checkId', ParseIntPipe) id: number,
+    @GetUser() requestUser: User,
+  ) {
+    await this.checkService.deleteFileByCheckId(id, {
+      isAdministrator: false,
+      requestUser,
+    });
+  }
+
+  @ApiOkResponseImplementation()
+  @ApiNotFoundImplementation()
+  @ApiForbiddenResponseImplementation()
+  @Auth(ROLE_NAME_ENUM.TREASURER)
+  @Delete('file/:checkId')
+  async deleteFileByCashId(
+    @Param('checkId', ParseIntPipe) id: number,
+    @GetUser() requestUser: User,
+  ) {
+    await this.checkService.deleteFileByCheckId(id, {
+      isAdministrator: true,
+      requestUser,
+    });
   }
 }

@@ -6,6 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { TransactionService } from '../services/transaction.service';
@@ -13,7 +14,7 @@ import { Auth, GetUser } from 'src/auth/decorators';
 import { ROLE_NAME_ENUM } from 'src/modules/role/entities/role_name.enum';
 import { User } from 'src/modules/user/entities/user.entity';
 import { CreateTransactionDto } from '../dtos/create/create-transaction.dto';
-import { NoFilesInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   ApiBadRequestResponseImplementation,
@@ -27,6 +28,7 @@ import { FindAndCountTransactionsDto } from '../dtos/response/find-and-count-tra
 import { Transaction } from '../entities/transaction.entity';
 import { FindAllTransactionsAsTreasureDto } from '../dtos/query/find-all-transactions-as-treasure.dto';
 import { FindAllTransactionsDto } from '../dtos/query/find-all-transactions.dto';
+import { ParseTransactionItemFileValidation } from 'src/storage-service/pipe/file-validation.pipe';
 @ApiTags('Transaction')
 @ApiUnauthorizedResponseImplementation()
 @ApiBadRequestResponseImplementation()
@@ -60,10 +62,15 @@ export class TransactionController {
   @ApiCreatedResponseImplementation(Transaction)
   @ApiNotFoundImplementation()
   @Auth()
-  @UseInterceptors(NoFilesInterceptor())
+  @UseInterceptors(AnyFilesInterceptor())
   @Post()
-  async create(@Body() dto: CreateTransactionDto, @GetUser() user: User) {
-    return await this.transactionService.create(dto, user);
+  async create(
+    @Body() dto: CreateTransactionDto,
+    @UploadedFiles(ParseTransactionItemFileValidation)
+    files: Express.Multer.File[],
+    @GetUser() user: User,
+  ) {
+    return await this.transactionService.create(dto, files, user);
   }
 
   @ApiOkResponseImplementation({ type: Transaction })

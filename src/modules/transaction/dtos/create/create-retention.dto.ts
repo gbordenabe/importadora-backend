@@ -19,4 +19,8 @@ export class CreateRetentionDto implements CreateBalanceDto {
   @AllowNulls()
   @IsOptional()
   observation: string;
+
+  @ApiProperty()
+  @IsString()
+  file_field_name: string;
 }

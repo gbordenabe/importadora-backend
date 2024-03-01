@@ -8,16 +8,21 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { Payment } from './classes/payment.class';
-import { IItemTransaction } from './interfaces/transaction-item.interface';
+import { IItemTransactionWithFile } from './interfaces/transaction-item.interface';
 import { Transaction } from './transaction.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { CHECK_TYPE_ENUM } from './enum/check-type.enum';
 import { History } from 'src/modules/history/entities/history.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import { toJson } from 'src/common/helpers/to-json.helper';
+import { File } from 'src/storage-service/entities/file.entity';
 
 @Entity()
-export class Check extends Payment implements IItemTransaction {
+export class Check extends Payment implements IItemTransactionWithFile {
+  @ApiProperty({ nullable: true, type: () => File })
+  @ManyToOne(() => File, { nullable: true, cascade: true })
+  @JoinColumn({ name: 'file_id' })
+  file: File;
   @ApiProperty({ nullable: true, maxLength: 500 })
   @Column({ type: 'text', nullable: true })
   request_change_comment: string;

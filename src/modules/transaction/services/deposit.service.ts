@@ -25,6 +25,9 @@ import { IUserLog } from 'src/common/interfaces/user-log.interface';
 import { Deposit } from '../entities/deposit.entity';
 import { CreateDepositDto } from '../dtos/create/create-deposit.dto';
 import { UpdateDepositDto } from '../dtos/update/update-deposit.dto';
+import { getFileEntity } from 'src/storage-service/utils/get-file-entity.util';
+import { StorageService } from 'src/storage-service/storage.service';
+import { handleAndSetterFileEntityOnTransactionItem } from '../helpers/set-file-entity-on-transaction-item.helper';
 
 @Injectable()
 export class DepositService
@@ -39,7 +42,38 @@ export class DepositService
     private readonly depositRepository: Repository<Deposit>,
     @Inject(forwardRef(() => TransactionService))
     private readonly transactionService: TransactionService,
+    private readonly storageService: StorageService,
   ) {}
+
+  async getFileByDepositId(
+    id: number,
+    { requestUser, isAdministrator }: IUserLog,
+  ) {
+    const deposit = await this.findOneById(
+      { id },
+      isAdministrator ? null : requestUser,
+    );
+    if (!deposit.file) throw new NotFoundException('File not found');
+    return await this.storageService.readBuffer(deposit.file.file_name);
+  }
+  async deleteFileByDepositId(
+    id: number,
+    { isAdministrator, requestUser }: IUserLog,
+  ) {
+    const deposit = await this.findOneById(
+      { id },
+      isAdministrator ? null : requestUser,
+    );
+    if (!deposit.file) throw new NotFoundException('File not found');
+    await this.storageService.deleteFile(deposit.file.file_name);
+    deposit.file = null;
+    setLogs({
+      entity: deposit,
+      updatedBy: requestUser,
+    });
+    await this.depositRepository.save(deposit);
+  }
+
   async findOneById(
     { id, relations = true }: IFindOneByIdOptions,
     requestUser?: User,
@@ -58,12 +92,14 @@ export class DepositService
     id: number,
     dto: UpdateDepositDto,
     { requestUser, isAdministrator }: IUserLog,
+    file: Express.Multer.File,
   ): Promise<Deposit> {
     const deposit = await this.findOneById(
       { id },
       isAdministrator ? null : requestUser,
     );
     const dtoVerified = await this.getAndVerifyDto(dto);
+    if (file) dtoVerified.file = getFileEntity(file);
     setLogs({
       entity: dtoVerified,
       updatedBy: requestUser,
@@ -82,6 +118,14 @@ export class DepositService
         updatedDeposit.transaction.id,
         this.transactionService,
       );
+      if (file)
+        await this.storageService.replaceFile(
+          {
+            file,
+            name: dtoVerified.file.file_name,
+          },
+          deposit.file?.file_name,
+        );
       return updatedDeposit;
     } catch (error) {
       handleExceptions(error, this.entityName);
@@ -92,12 +136,24 @@ export class DepositService
     created_by: userRelations,
     updated_by: userRelations,
     transaction: true,
+    file: true,
     historical: true,
   };
   async getAndVerifyDto(
     dto: Partial<CreateDepositDto & UpdateDepositDto> = {},
+    files: Express.Multer.File[] = [],
   ): Promise<Deposit> {
-    return this.depositRepository.create(dto);
+    const { file_field_name, ...rest } = dto;
+    const deposit = this.depositRepository.create(rest);
+    if (file_field_name) {
+      handleAndSetterFileEntityOnTransactionItem({
+        entity: deposit,
+        fieldName: file_field_name,
+        files,
+        isMandatory: true,
+      });
+    }
+    return deposit;
   }
   async setStatus(
     id: number,

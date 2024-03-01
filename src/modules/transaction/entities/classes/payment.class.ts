@@ -42,11 +42,15 @@ export class Payment implements LogFields {
   updated_by: User;
 
   @ApiProperty({ type: String })
-  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
   created_at: Date;
 
   @ApiProperty({ type: String, nullable: true })
-  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp', nullable: true })
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamp with time zone',
+    nullable: true,
+  })
   updated_at: Date;
 
   //amount 10, 2 not null

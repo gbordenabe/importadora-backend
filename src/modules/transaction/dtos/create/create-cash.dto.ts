@@ -24,4 +24,9 @@ export class CreateCashDto implements CreatePaymentDto {
   @AllowNulls()
   @IsOptional()
   observation: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  file_field_name: string;
 }

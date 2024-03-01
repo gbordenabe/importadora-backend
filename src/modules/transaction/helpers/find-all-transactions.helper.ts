@@ -2,6 +2,7 @@ import { SelectQueryBuilder } from 'typeorm';
 import { Transaction } from '../entities/transaction.entity';
 import { ORDER_ENUM } from 'src/common/enum/order.enum.';
 import { TRANSACTION_ORDER_BY_ENUM } from '../dtos/enum/transaction-order-by.enum';
+import { getRandomIntegerId } from 'src/common/utilities/random-integer-id.helper';
 
 export const setRelationsOnQueryBuilder = (
   queryBuilder: SelectQueryBuilder<Transaction>,
@@ -17,14 +18,17 @@ export const setRelationsOnQueryBuilder = (
   queryBuilder.leftJoinAndSelect('transaction.checks', 'checks');
   queryBuilder.leftJoinAndSelect('checks.created_by', 'checks_created_by');
   queryBuilder.leftJoinAndSelect('checks.updated_by', 'checks_updated_by');
+  queryBuilder.leftJoinAndSelect('checks.file', 'checks_file');
   //deposit
   queryBuilder.leftJoinAndSelect('transaction.deposits', 'deposits');
   queryBuilder.leftJoinAndSelect('deposits.created_by', 'deposits_created_by');
   queryBuilder.leftJoinAndSelect('deposits.updated_by', 'deposits_updated_by');
+  queryBuilder.leftJoinAndSelect('deposits.file', 'deposits_file');
   //cash
   queryBuilder.leftJoinAndSelect('transaction.cash', 'cash');
   queryBuilder.leftJoinAndSelect('cash.created_by', 'cash_created_by');
   queryBuilder.leftJoinAndSelect('cash.updated_by', 'cash_updated_by');
+  queryBuilder.leftJoinAndSelect('cash.file', 'cash_file');
   //credit
   queryBuilder.leftJoinAndSelect('transaction.credits', 'credits');
   queryBuilder.leftJoinAndSelect('credits.created_by', 'credits_created_by');
@@ -49,6 +53,7 @@ export const setRelationsOnQueryBuilder = (
     'retentions.updated_by',
     'retentions_updated_by',
   );
+  queryBuilder.leftJoinAndSelect('retentions.file', 'retentions_file');
   //user logs
   queryBuilder.leftJoinAndSelect('transaction.created_by', 'created_by');
   queryBuilder.leftJoinAndSelect('transaction.updated_by', 'updated_by');
@@ -70,8 +75,8 @@ export interface ISetWhereEqualInQueryBuilderOptions {
 }
 export interface ISetDateRangeInQueryBuilderOptions {
   field: string;
-  start?: Date;
-  end?: Date;
+  start?: Date | string;
+  end?: Date | string;
   queryBuilder: SelectQueryBuilder<Transaction>;
 }
 export interface ISetRangeInQueryBuilderOptions {
@@ -82,8 +87,8 @@ export interface ISetRangeInQueryBuilderOptions {
 }
 export interface ISetDateRangeInQueryBuilderOptions {
   field: string;
-  start?: Date;
-  end?: Date;
+  start?: Date | string;
+  end?: Date | string;
   queryBuilder: SelectQueryBuilder<Transaction>;
 }
 export const setOrderOnQueryBuilder = ({
@@ -105,8 +110,11 @@ export const setFieldInQueryBuilder = ({
   queryBuilder,
 }: ISetFieldInQueryBuilderOptions) => {
   if (!values?.length) return;
+  const paramName = field.concat(getRandomIntegerId().toString());
   values = Array.from(new Set<string | number>(values));
-  queryBuilder.andWhere(`${field}::text IN (:...values)`, { values });
+  queryBuilder.andWhere(`${field} IN (:...${paramName})`, {
+    [paramName]: values,
+  });
 };
 export const setWhereEqualInQueryBuilder = ({
   field,
@@ -114,7 +122,10 @@ export const setWhereEqualInQueryBuilder = ({
   queryBuilder,
 }: ISetWhereEqualInQueryBuilderOptions) => {
   if (!value) return;
-  queryBuilder.andWhere(`${field}::text = :value`, { value });
+  const paramName = field.concat(getRandomIntegerId().toString());
+  queryBuilder.andWhere(`${field} = :${paramName}`, {
+    [paramName]: value,
+  });
 };
 
 export const setRangeInQueryBuilder = ({
@@ -124,10 +135,12 @@ export const setRangeInQueryBuilder = ({
   queryBuilder,
 }: ISetRangeInQueryBuilderOptions) => {
   if (start) {
-    queryBuilder.andWhere(`${field} >= :start`, { start });
+    const paramName = field.concat(getRandomIntegerId().toString());
+    queryBuilder.andWhere(`${field} >= :${paramName}`, { [paramName]: start });
   }
   if (end) {
-    queryBuilder.andWhere(`${field} <= :end`, { end });
+    const paramName = field.concat(getRandomIntegerId().toString());
+    queryBuilder.andWhere(`${field} <= :${paramName}`, { [paramName]: end });
   }
 };
 export const setDateRangeInQueryBuilder = ({
@@ -137,9 +150,15 @@ export const setDateRangeInQueryBuilder = ({
   queryBuilder,
 }: ISetDateRangeInQueryBuilderOptions) => {
   if (start) {
-    queryBuilder.andWhere(`${field} >= :start`, { start });
+    const paramName = field.concat(getRandomIntegerId().toString());
+    queryBuilder.andWhere(`${field} >= :${paramName}`, {
+      [paramName]: new Date(start),
+    });
   }
   if (end) {
-    queryBuilder.andWhere(`${field} <= :end`, { end });
+    const paramName = field.concat(getRandomIntegerId().toString());
+    queryBuilder.andWhere(`${field} <= :${paramName}`, {
+      [paramName]: new Date(end),
+    });
   }
 };

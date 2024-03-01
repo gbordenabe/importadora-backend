@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { Bill } from './entities/bill.entity';
@@ -27,6 +32,8 @@ import { CreditNoteController } from './controllers/credit-note.controller';
 import { CreditController } from './controllers/credit.controller';
 import { DepositController } from './controllers/deposit.controller';
 import { RetentionController } from './controllers/retention.controller';
+import { StorageModule } from 'src/storage-service/storage.module';
+import { MultipartMiddleware } from 'src/common/middleware/multipart.middleware';
 
 @Module({
   imports: [
@@ -43,6 +50,7 @@ import { RetentionController } from './controllers/retention.controller';
     CompanyModule,
     ClientModule,
     AuthModule,
+    StorageModule,
   ],
   controllers: [
     TransactionController,
@@ -66,4 +74,11 @@ import { RetentionController } from './controllers/retention.controller';
     RetentionService,
   ],
 })
-export class TransactionModule {}
+export class TransactionModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(MultipartMiddleware).forRoutes({
+      method: RequestMethod.POST,
+      path: 'transaction',
+    });
+  }
+}

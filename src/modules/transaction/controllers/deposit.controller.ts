@@ -1,12 +1,16 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Head,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  StreamableFile,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { DepositService } from '../services/deposit.service';
 import { Auth, GetUser } from 'src/auth/decorators';
@@ -24,6 +28,8 @@ import { ROLE_NAME_ENUM } from 'src/modules/role/entities/role_name.enum';
 import { UpdateDepositDto } from '../dtos/update/update-deposit.dto';
 import { TRANSACTION_STATUS_ENUM } from '../entities/enum/transaction-status-.enum';
 import { ItemRequestToChangeDto } from '../dtos/update/item-request-to-change.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ParseTransactionItemFileValidation } from 'src/storage-service/pipe/file-validation.pipe';
 
 @ApiTags('Deposit')
 @ApiBadRequestResponseImplementation()
@@ -32,6 +38,39 @@ import { ItemRequestToChangeDto } from '../dtos/update/item-request-to-change.dt
 @Controller('deposit')
 export class DepositController {
   constructor(private readonly depositService: DepositService) {}
+
+  @ApiOkResponseImplementation()
+  @ApiNotFoundImplementation()
+  @Auth()
+  @Get('mine/file/:depositId')
+  async getMyFileByCashId(
+    @Param('depositId', ParseIntPipe) id: number,
+    @GetUser() requestUser: User,
+  ) {
+    return new StreamableFile(
+      await this.depositService.getFileByDepositId(id, {
+        requestUser,
+        isAdministrator: false,
+      }),
+    );
+  }
+
+  @ApiOkResponseImplementation()
+  @ApiNotFoundImplementation()
+  @ApiForbiddenResponseImplementation()
+  @Auth(ROLE_NAME_ENUM.TREASURER)
+  @Get('file/:depositId')
+  async getFileByCashId(
+    @Param('depositId', ParseIntPipe) id: number,
+    @GetUser() requestUser: User,
+  ) {
+    return new StreamableFile(
+      await this.depositService.getFileByDepositId(id, {
+        requestUser,
+        isAdministrator: true,
+      }),
+    );
+  }
 
   @ApiOkResponseImplementation({ type: Deposit })
   @ApiNotFoundImplementation()
@@ -55,33 +94,47 @@ export class DepositController {
 
   @ApiOkResponseImplementation({ type: Deposit })
   @ApiNotFoundImplementation()
+  @UseInterceptors(FileInterceptor('file'))
   @Auth()
   @Patch('mine/:id')
   async updateOneOfMineById(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateDepositDto,
     @GetUser() requestUser: User,
+    @UploadedFile(ParseTransactionItemFileValidation) file: Express.Multer.File,
   ) {
-    return await this.depositService.updateOneById(id, dto, {
-      requestUser,
-      isAdministrator: false,
-    });
+    return await this.depositService.updateOneById(
+      id,
+      dto,
+      {
+        requestUser,
+        isAdministrator: false,
+      },
+      file,
+    );
   }
 
   @ApiOkResponseImplementation({ type: Deposit })
   @ApiNotFoundImplementation()
   @ApiForbiddenResponseImplementation()
+  @UseInterceptors(FileInterceptor('file'))
   @Auth(ROLE_NAME_ENUM.TREASURER)
   @Patch(':id')
   async updateOneById(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateDepositDto,
     @GetUser() requestUser: User,
+    @UploadedFile(ParseTransactionItemFileValidation) file: Express.Multer.File,
   ) {
-    return await this.depositService.updateOneById(id, dto, {
-      requestUser,
-      isAdministrator: true,
-    });
+    return await this.depositService.updateOneById(
+      id,
+      dto,
+      {
+        requestUser,
+        isAdministrator: true,
+      },
+      file,
+    );
   }
 
   @ApiOkResponseImplementation()
@@ -116,5 +169,34 @@ export class DepositController {
       TRANSACTION_STATUS_ENUM.OK,
       requestUser,
     );
+  }
+
+  @ApiOkResponseImplementation()
+  @ApiNotFoundImplementation()
+  @Auth()
+  @Delete('mine/file/:depositId')
+  async deleteMyFileByCashId(
+    @Param('depositId', ParseIntPipe) id: number,
+    @GetUser() requestUser: User,
+  ) {
+    await this.depositService.deleteFileByDepositId(id, {
+      isAdministrator: false,
+      requestUser,
+    });
+  }
+
+  @ApiOkResponseImplementation()
+  @ApiNotFoundImplementation()
+  @ApiForbiddenResponseImplementation()
+  @Auth(ROLE_NAME_ENUM.TREASURER)
+  @Delete('file/:depositId')
+  async deleteFileByCashId(
+    @Param('depositId', ParseIntPipe) id: number,
+    @GetUser() requestUser: User,
+  ) {
+    await this.depositService.deleteFileByDepositId(id, {
+      isAdministrator: true,
+      requestUser,
+    });
   }
 }

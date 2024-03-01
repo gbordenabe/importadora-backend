@@ -31,4 +31,8 @@ export class CreateDepositDto implements CreatePaymentDto {
   @AllowNulls()
   @IsOptional()
   bank_name: string;
+
+  @ApiProperty()
+  @IsString()
+  file_field_name: string;
 }

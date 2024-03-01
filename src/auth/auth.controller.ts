@@ -53,7 +53,6 @@ export class AuthController {
   @ApiOkResponseImplementation()
   @Get('pass-recovery-req/:email')
   async passwordRecoveryRequest(@Param('email') email: string) {
-    console.log({ email });
     await this.authService.requestPasswordRecovery(email);
   }
 

@@ -51,8 +51,14 @@ import { Deposit } from '../entities/deposit.entity';
 import { CreateDepositDto } from '../dtos/create/create-deposit.dto';
 import { CreateRetentionDto } from '../dtos/create/create-retention.dto';
 import { Retention } from '../entities/retention.entity';
-import { IItemTransaction } from '../entities/interfaces/transaction-item.interface';
+import {
+  IItemTransaction,
+  IItemTransactionWithFile,
+} from '../entities/interfaces/transaction-item.interface';
 import { LogFields } from 'src/common/entities/log-fields';
+import { StorageService } from 'src/storage-service/storage.service';
+import { saveTransactionFiles } from '../helpers/save-transaction-files.helper';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class TransactionService
@@ -78,6 +84,8 @@ export class TransactionService
     private readonly retentionService: RetentionService,
     private readonly creditNoteService: CreditNoteService,
     private readonly clientService: ClientService,
+    private readonly storageService: StorageService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
   async rawSave(transaction: Transaction) {
     await this.transactionRepository.save(transaction);
@@ -113,6 +121,7 @@ export class TransactionService
       retention_amount_min,
       retention_status,
       sellers,
+      total_amount_min,
       statuses,
     } = filters;
     const queryBuilder =
@@ -123,6 +132,20 @@ export class TransactionService
       orderBy: order_by,
       queryBuilder,
     });
+    if (total_amount_min) {
+      const subQuery =
+        this.transactionRepository.createQueryBuilder('transaction');
+      subQuery.select('transaction.id');
+      //conectar facturas
+      subQuery.leftJoin('transaction.bills', 'bills');
+      // sumar amount de las facturas
+      subQuery.groupBy('transaction.id');
+      subQuery.having(`SUM(bills.amount) >= :total_amount_min`, {
+        total_amount_min,
+      });
+      queryBuilder.andWhere(`transaction.id IN (${subQuery.getQuery()})`);
+      queryBuilder.setParameters(subQuery.getParameters());
+    }
     setFieldInQueryBuilder({
       field: 'created_by.id',
       values: sellers,
@@ -254,6 +277,13 @@ export class TransactionService
     approving_treasurer: userRelations,
     created_by: userRelations,
     updated_by: userRelations,
+    historical: true,
+  };
+  private readonly itemTransactionWithFileRelations: FindOptionsRelations<
+    IItemTransactionWithFile & LogFields
+  > = {
+    ...this.itemTransactionRelations,
+    file: true,
   };
   relations: FindOptionsRelations<Transaction> = {
     company: true,
@@ -261,12 +291,12 @@ export class TransactionService
     created_by: userRelations,
     updated_by: userRelations,
     bills: this.itemTransactionRelations,
-    cash: this.itemTransactionRelations,
-    checks: this.itemTransactionRelations,
+    cash: this.itemTransactionWithFileRelations,
+    checks: this.itemTransactionWithFileRelations,
     credit_notes: this.itemTransactionRelations,
     credits: this.itemTransactionRelations,
-    deposits: this.itemTransactionRelations,
-    retentions: this.itemTransactionRelations,
+    deposits: this.itemTransactionWithFileRelations,
+    retentions: this.itemTransactionWithFileRelations,
   };
   findOneById(
     { id, relations = true }: IFindOneByIdOptions,
@@ -293,19 +323,23 @@ export class TransactionService
     setLogs({ entity: transaction.deposits, createdBy: requestUser });
     setLogs({ entity: transaction.retentions, createdBy: requestUser });
   }
+
+  @OnEvent('transaction.created')
+  handleTransactionCreatedEvent(transaction: Transaction) {
+    saveTransactionFiles(transaction, this.storageService);
+  }
   async create(
     dto: CreateTransactionDto,
+    files: Express.Multer.File[],
     requestUser: User,
   ): Promise<Transaction> {
-    const dtoVerified = await this.getAndVerifyDto(dto);
-    console.log({ requestUser });
+    const dtoVerified = await this.getAndVerifyDto(dto, files);
     this.setTransactionLogsBeforeToSave(dtoVerified, requestUser);
-    console.log({
-      dtoVerified: JSON.stringify(dtoVerified, null, 2),
-    });
     this.handleInitialStatus(dtoVerified);
     try {
-      return await this.transactionRepository.save(dtoVerified);
+      const transaction = await this.transactionRepository.save(dtoVerified);
+      this.eventEmitter.emit('transaction.created', dtoVerified);
+      return transaction;
     } catch (error) {
       handleExceptions(error, this.entityName);
     }
@@ -317,6 +351,7 @@ export class TransactionService
 
   async getAndVerifyDto(
     dto: Partial<CreateTransactionDto> = {},
+    files: Express.Multer.File[] = [],
   ): Promise<Transaction> {
     const {
       bills: billsDto,
@@ -336,7 +371,7 @@ export class TransactionService
       bills,
       cash,
       checks,
-      creditNotes,
+      credit_notes,
       credits,
       deposits,
       retentions,
@@ -356,10 +391,12 @@ export class TransactionService
       checkDtos<Cash, CreateCashDto>({
         service: this.cashService,
         dtos: cashDto,
+        args: [files],
       }),
       checkDtos<Check, CreateCheckDto>({
         service: this.checkService,
         dtos: checksDto,
+        args: [files],
       }),
       checkDtos<CreditNote, CreateCreditNoteDto>({
         service: this.creditNoteService,
@@ -372,24 +409,27 @@ export class TransactionService
       checkDtos<Deposit, CreateDepositDto>({
         service: this.depositService,
         dtos: depositsDto,
+        args: [files],
       }),
       checkDtos<Retention, CreateRetentionDto>({
         service: this.retentionService,
         dtos: retentionsDto,
+        args: [files],
       }),
     ]);
-    return this.transactionRepository.create({
+    const transaction = this.transactionRepository.create({
       ...rest,
       company,
       client,
-      bills,
-      cash,
-      checks,
-      credit_notes: creditNotes,
-      credits,
-      deposits,
-      retentions,
     });
+    transaction.bills = bills;
+    transaction.cash = cash;
+    transaction.checks = checks;
+    transaction.credit_notes = credit_notes;
+    transaction.credits = credits;
+    transaction.deposits = deposits;
+    transaction.retentions = retentions;
+    return transaction;
   }
 
   private handleInitialStatus(transaction: Transaction) {

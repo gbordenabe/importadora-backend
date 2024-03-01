@@ -25,6 +25,9 @@ import { IUserLog } from 'src/common/interfaces/user-log.interface';
 import { Retention } from '../entities/retention.entity';
 import { CreateRetentionDto } from '../dtos/create/create-retention.dto';
 import { UpdateRetentionDto } from '../dtos/update/update-retention.dto';
+import { handleAndSetterFileEntityOnTransactionItem } from '../helpers/set-file-entity-on-transaction-item.helper';
+import { getFileEntity } from 'src/storage-service/utils/get-file-entity.util';
+import { StorageService } from 'src/storage-service/storage.service';
 
 @Injectable()
 export class RetentionService
@@ -39,7 +42,38 @@ export class RetentionService
     private readonly retentionRepository: Repository<Retention>,
     @Inject(forwardRef(() => TransactionService))
     private readonly transactionService: TransactionService,
+    private readonly storageService: StorageService,
   ) {}
+
+  async getFileByRetentionId(
+    id: number,
+    { requestUser, isAdministrator }: IUserLog,
+  ) {
+    const retention = await this.findOneById(
+      { id },
+      isAdministrator ? null : requestUser,
+    );
+    if (!retention.file) throw new NotFoundException('File not found');
+    return await this.storageService.readBuffer(retention.file.file_name);
+  }
+  async deleteFileByRetentionId(
+    id: number,
+    { isAdministrator, requestUser }: IUserLog,
+  ) {
+    const retention = await this.findOneById(
+      { id },
+      isAdministrator ? null : requestUser,
+    );
+    if (!retention.file) throw new NotFoundException('File not found');
+    await this.storageService.deleteFile(retention.file.file_name);
+    retention.file = null;
+    setLogs({
+      entity: retention,
+      updatedBy: requestUser,
+    });
+    await this.retentionRepository.save(retention);
+  }
+
   async findOneById(
     { id, relations = true }: IFindOneByIdOptions,
     requestUser?: User,
@@ -58,12 +92,14 @@ export class RetentionService
     id: number,
     dto: UpdateRetentionDto,
     { requestUser, isAdministrator }: IUserLog,
+    file: Express.Multer.File,
   ): Promise<Retention> {
     const retention = await this.findOneById(
       { id },
       isAdministrator ? null : requestUser,
     );
     const dtoVerified = await this.getAndVerifyDto(dto);
+    if (file) dtoVerified.file = getFileEntity(file);
     setLogs({
       entity: dtoVerified,
       updatedBy: requestUser,
@@ -82,6 +118,14 @@ export class RetentionService
         updatedRetention.transaction.id,
         this.transactionService,
       );
+      if (file)
+        await this.storageService.replaceFile(
+          {
+            file,
+            name: dtoVerified.file.file_name,
+          },
+          retention.file?.file_name,
+        );
       return updatedRetention;
     } catch (error) {
       handleExceptions(error, this.entityName);
@@ -93,11 +137,23 @@ export class RetentionService
     updated_by: userRelations,
     transaction: true,
     historical: true,
+    file: true,
   };
   async getAndVerifyDto(
     dto: Partial<CreateRetentionDto & UpdateRetentionDto> = {},
+    files: Express.Multer.File[] = [],
   ): Promise<Retention> {
-    return this.retentionRepository.create(dto);
+    const { file_field_name, ...rest } = dto;
+    const retention = this.retentionRepository.create(rest);
+    if (file_field_name) {
+      handleAndSetterFileEntityOnTransactionItem({
+        entity: retention,
+        fieldName: file_field_name,
+        files,
+        isMandatory: true,
+      });
+    }
+    return retention;
   }
   async setStatus(
     id: number,

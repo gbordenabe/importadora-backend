@@ -10,10 +10,12 @@ export interface ICheckFkOptions<T> {
 export interface ICheckDtoOptions<Entity, Dto> {
   service: ServiceWithDtoVerification<Entity, Dto>;
   dto: Dto;
+  args?: any[];
 }
 export interface ICheckDtosOptions<Entity, Dto> {
   service: ServiceWithDtoVerification<Entity, Dto>;
   dtos: Dto[];
+  args?: any[];
 }
 export const checkFk = async <T>({ service, fkId }: ICheckFkOptions<T>) => {
   return fkId
@@ -23,16 +25,18 @@ export const checkFk = async <T>({ service, fkId }: ICheckFkOptions<T>) => {
 export const checkDto = async <Entity, Dto>({
   service,
   dto,
+  args,
 }: ICheckDtoOptions<Entity, Dto>) => {
-  return dto ? await service.getAndVerifyDto(dto) : undefined;
+  return dto ? await service.getAndVerifyDto(dto, ...args) : undefined;
 };
 export const checkDtos = async <Entity, Dto>({
   service,
   dtos,
+  args = [],
 }: ICheckDtosOptions<Entity, Dto>) => {
   return dtos?.length
     ? await Promise.all(
-        dtos.map(async (dto) => await service.getAndVerifyDto(dto)),
+        dtos.map(async (dto) => await service.getAndVerifyDto(dto, ...args)),
       )
     : undefined;
 };

@@ -21,7 +21,7 @@ export class History {
   created_by: User;
 
   @ApiProperty()
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamp with time zone' })
   created_at: Date;
 
   @ApiProperty()

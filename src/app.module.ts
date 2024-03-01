@@ -8,10 +8,12 @@ import { DatabaseModule } from './database/database.module';
 import { CompanyModule } from './modules/company/company.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    EventEmitterModule.forRoot(),
     DatabaseModule,
     MulterModule.register(),
     UserModule,

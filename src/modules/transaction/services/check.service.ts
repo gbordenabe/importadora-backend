@@ -25,6 +25,9 @@ import { IUserLog } from 'src/common/interfaces/user-log.interface';
 import { Check } from '../entities/check.entity';
 import { CreateCheckDto } from '../dtos/create/create-check.dto';
 import { UpdateCheckDto } from '../dtos/update/update-check.dto';
+import { handleAndSetterFileEntityOnTransactionItem } from '../helpers/set-file-entity-on-transaction-item.helper';
+import { getFileEntity } from 'src/storage-service/utils/get-file-entity.util';
+import { StorageService } from 'src/storage-service/storage.service';
 
 @Injectable()
 export class CheckService
@@ -39,7 +42,36 @@ export class CheckService
     private readonly checkRepository: Repository<Check>,
     @Inject(forwardRef(() => TransactionService))
     private readonly transactionService: TransactionService,
+    private readonly storageService: StorageService,
   ) {}
+  async getFileByCheckId(
+    id: number,
+    { requestUser, isAdministrator }: IUserLog,
+  ) {
+    const check = await this.findOneById(
+      { id },
+      isAdministrator ? null : requestUser,
+    );
+    if (!check.file) throw new NotFoundException('File not found');
+    return await this.storageService.readBuffer(check.file.file_name);
+  }
+  async deleteFileByCheckId(
+    id: number,
+    { isAdministrator, requestUser }: IUserLog,
+  ) {
+    const check = await this.findOneById(
+      { id },
+      isAdministrator ? null : requestUser,
+    );
+    if (!check.file) throw new NotFoundException('File not found');
+    await this.storageService.deleteFile(check.file.file_name);
+    check.file = null;
+    setLogs({
+      entity: check,
+      updatedBy: requestUser,
+    });
+    await this.checkRepository.save(check);
+  }
   async findOneById(
     { id, relations = true }: IFindOneByIdOptions,
     requestUser?: User,
@@ -79,12 +111,14 @@ export class CheckService
     id: number,
     dto: UpdateCheckDto,
     { requestUser, isAdministrator }: IUserLog,
+    file: Express.Multer.File,
   ): Promise<Check> {
     const check = await this.findOneById(
       { id },
       isAdministrator ? null : requestUser,
     );
     const dtoVerified = await this.getAndVerifyDto(dto);
+    if (file) dtoVerified.file = getFileEntity(file);
     setLogs({
       entity: dtoVerified,
       updatedBy: requestUser,
@@ -103,6 +137,14 @@ export class CheckService
         updatedCheck.transaction.id,
         this.transactionService,
       );
+      if (file)
+        await this.storageService.replaceFile(
+          {
+            file,
+            name: dtoVerified.file.file_name,
+          },
+          check.file?.file_name,
+        );
       return updatedCheck;
     } catch (error) {
       handleExceptions(error, this.entityName);
@@ -114,10 +156,23 @@ export class CheckService
     updated_by: userRelations,
     transaction: true,
     historical: true,
+    file: true,
   };
+
   async getAndVerifyDto(
     dto: Partial<CreateCheckDto & UpdateCheckDto> = {},
+    files: Express.Multer.File[] = [],
   ): Promise<Check> {
-    return this.checkRepository.create(dto);
+    const { file_field_name, ...rest } = dto;
+    const check = this.checkRepository.create(rest);
+    if (file_field_name) {
+      handleAndSetterFileEntityOnTransactionItem({
+        entity: check,
+        fieldName: file_field_name,
+        files,
+        isMandatory: false,
+      });
+    }
+    return check;
   }
 }

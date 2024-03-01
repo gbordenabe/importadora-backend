@@ -12,6 +12,10 @@ export class Client {
   @Column({ length: 100 })
   name: string;
 
+  @ApiProperty({ maxLength: 100, nullable: true, uniqueItems: true })
+  @Column({ length: 100, nullable: true, unique: true })
+  client_number: string;
+
   @ApiProperty({ maxLength: 100, nullable: true })
   @Column({ length: 100, nullable: true })
   business_name: string;
