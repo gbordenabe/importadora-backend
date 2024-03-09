@@ -46,10 +46,17 @@ export class TransactionController {
   @Post('get-all')
   async findAll(
     @Body() filters: FindAllTransactionsAsTreasureDto,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
   ) {
-    return await this.transactionService.findAll({ filters, page, limit });
+    const pageNumber = page > 0 ? page : 1;
+    const limitNumber = limit > 0 ? limit : 10;
+
+    return await this.transactionService.findAll({
+      filters,
+      page: pageNumber,
+      limit: limitNumber,
+    });
   }
 
   @ApiOkResponseImplementation({
@@ -60,14 +67,16 @@ export class TransactionController {
   async findAllOfMine(
     @Body() filters: FindAllTransactionsDto,
     @GetUser() requestUser: User,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
   ) {
+    const pageNumber = page > 0 ? page : 1;
+    const limitNumber = limit > 0 ? limit : 10;
     return await this.transactionService.findAll({
       filters,
       requestUser,
-      page,
-      limit,
+      page: pageNumber,
+      limit: limitNumber,
     });
   }
 
