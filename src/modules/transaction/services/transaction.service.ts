@@ -91,10 +91,21 @@ export class TransactionService
     await this.transactionRepository.save(transaction);
   }
 
-  async findAll(
-    filters: Partial<FindAllTransactionsAsTreasureDto>,
-    requestUser?: User,
-  ): Promise<IFindAndCountResult<Transaction>> {
+  async findAll({
+    filters,
+    requestUser,
+    page = 1,
+    limit = 10,
+  }: {
+    filters: Partial<FindAllTransactionsAsTreasureDto>;
+    requestUser?: User;
+    page: number;
+    limit: number;
+  }): Promise<{
+    data: Transaction[];
+    count: number;
+    totalPages: number;
+  }> /*Promise<IFindAndCountResult<Transaction>>*/ {
     const {
       bill_amount_min,
       bill_number,
@@ -267,8 +278,16 @@ export class TransactionService
       value: requestUser?.id,
       queryBuilder,
     });
+
+    const offset = (page - 1) * limit;
+
+    queryBuilder.skip(offset).take(limit);
+
     const [data, count] = await queryBuilder.getManyAndCount();
-    return { data, count };
+
+    const totalPages = Math.ceil(count / limit);
+
+    return { data, count, totalPages };
   }
   entityName: string = Transaction.name;
   private readonly itemTransactionRelations: FindOptionsRelations<

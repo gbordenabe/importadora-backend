@@ -6,6 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -43,8 +44,12 @@ export class TransactionController {
   @ApiForbiddenResponseImplementation()
   @Auth(ROLE_NAME_ENUM.TREASURER)
   @Post('get-all')
-  async findAll(@Body() filters: FindAllTransactionsAsTreasureDto) {
-    return await this.transactionService.findAll(filters);
+  async findAll(
+    @Body() filters: FindAllTransactionsAsTreasureDto,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    return await this.transactionService.findAll({ filters, page, limit });
   }
 
   @ApiOkResponseImplementation({
@@ -55,8 +60,15 @@ export class TransactionController {
   async findAllOfMine(
     @Body() filters: FindAllTransactionsDto,
     @GetUser() requestUser: User,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
   ) {
-    return await this.transactionService.findAll(filters, requestUser);
+    return await this.transactionService.findAll({
+      filters,
+      requestUser,
+      page,
+      limit,
+    });
   }
 
   @ApiCreatedResponseImplementation(Transaction)
