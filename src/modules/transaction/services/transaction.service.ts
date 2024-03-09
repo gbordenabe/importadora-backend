@@ -337,7 +337,40 @@ export class TransactionService
     this.setTransactionLogsBeforeToSave(dtoVerified, requestUser);
     this.handleInitialStatus(dtoVerified);
     try {
-      const transaction = await this.transactionRepository.save(dtoVerified);
+      const billsTotalAmount =
+        dto?.bills?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+      const cashsTotalAmount =
+        dto?.cash?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+      const checksTotalAmount =
+        dto?.checks?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+      const depositsTotalAmount =
+        dto?.deposits?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+      const creditsTotalAmount =
+        dto?.credits?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+      const creditsNotesTotalAmount =
+        dto?.credit_notes?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+      const retentionsTotalAmount =
+        dto?.retentions?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+
+      const grandTotal =
+        cashsTotalAmount +
+        checksTotalAmount +
+        depositsTotalAmount +
+        creditsTotalAmount +
+        creditsNotesTotalAmount +
+        retentionsTotalAmount;
+
+      const transaction = await this.transactionRepository.save({
+        total_bill: billsTotalAmount,
+        total_cash: cashsTotalAmount,
+        total_checks: checksTotalAmount,
+        total_deposit: depositsTotalAmount,
+        total_credit: creditsTotalAmount,
+        total_credit_note: creditsNotesTotalAmount,
+        total_retention: retentionsTotalAmount,
+        total_amount: grandTotal,
+        ...dtoVerified,
+      });
       this.eventEmitter.emit('transaction.created', dtoVerified);
       return transaction;
     } catch (error) {

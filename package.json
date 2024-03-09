@@ -37,6 +37,7 @@
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "fast-xml-parser": "^4.3.5",
     "lodash": "^4.17.21",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.8",
