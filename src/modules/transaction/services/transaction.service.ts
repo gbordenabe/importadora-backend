@@ -338,27 +338,27 @@ export class TransactionService
     this.handleInitialStatus(dtoVerified);
     try {
       const billsTotalAmount =
-        dto?.bills?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+        dto?.bills?.reduce((acc, bill) => acc + bill.amount, 0) || null;
       const cashsTotalAmount =
-        dto?.cash?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+        dto?.cash?.reduce((acc, bill) => acc + bill.amount, 0) || null;
       const checksTotalAmount =
-        dto?.checks?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+        dto?.checks?.reduce((acc, bill) => acc + bill.amount, 0) || null;
       const depositsTotalAmount =
-        dto?.deposits?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+        dto?.deposits?.reduce((acc, bill) => acc + bill.amount, 0) || null;
       const creditsTotalAmount =
-        dto?.credits?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+        dto?.credits?.reduce((acc, bill) => acc + bill.amount, 0) || null;
       const creditsNotesTotalAmount =
-        dto?.credit_notes?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+        dto?.credit_notes?.reduce((acc, bill) => acc + bill.amount, 0) || null;
       const retentionsTotalAmount =
-        dto?.retentions?.reduce((acc, bill) => acc + bill.amount, 0) || 0;
+        dto?.retentions?.reduce((acc, bill) => acc + bill.amount, 0) || null;
 
       const grandTotal =
-        cashsTotalAmount +
-        checksTotalAmount +
-        depositsTotalAmount +
-        creditsTotalAmount +
-        creditsNotesTotalAmount +
-        retentionsTotalAmount;
+        (cashsTotalAmount ?? 0) +
+        (checksTotalAmount ?? 0) +
+        (depositsTotalAmount ?? 0) +
+        (creditsTotalAmount ?? 0) +
+        (creditsNotesTotalAmount ?? 0) +
+        (retentionsTotalAmount ?? 0);
 
       const transaction = await this.transactionRepository.save({
         total_bill: billsTotalAmount,
