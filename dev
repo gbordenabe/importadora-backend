@@ -1,0 +1,155 @@
+
+> importadora-sudamericana@0.0.1 start
+> nest start
+
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:18 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+{
+  options: {
+    type: 'postgres',
+    host: 'localhost',
+    port: 5432,
+    database: 'importadora',
+    username: 'rosmari',
+    password: '',
+    entities: [
+      '/Users/rosmari/importadora-backend/dist/database/../**/*.entity{.ts,.js}'
+    ],
+    dropSchema: false,
+    autoLoadEntities: true,
+    synchronize: true
+  }
+}
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +29ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +3ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMailerModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMulterModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mStorageModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMailerCoreModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mEmailModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mEventEmitterModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmCoreModule dependencies initialized[39m[38;5;3m +215ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDatabaseModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRoleModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mCompanyModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mClientModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUserModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTransactionModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mUsuariosController {/user}:[39m[38;5;3m +38ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/user/request-email-verification, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/user/verify-email/:code, HEAD} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/user, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/user, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/user/my-profile, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/user/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/user/my-profile, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/user/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/user/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/refresh-token, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/pass-recovery-req/:email, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/check-code-and-email/:code/:email, HEAD} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/recover-pass-by-email, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mRoleController {/role}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/role, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/role/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mCompanyController {/company}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/company, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/company, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/company/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/company/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/company/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mTransactionController {/transaction}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/transaction/get-all, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/transaction/get-all/mine, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/transaction, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/transaction/mine/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/transaction/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/transaction/mine/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/transaction/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mBillController {/bill}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/bill/mine/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/bill/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/bill/mine/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/bill/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/bill/set-status-as-to-change/:id, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/bill/set-status-as-ok/:id, HEAD} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mCashController {/cash}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/cash/mine/file/:cashId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/cash/file/:cashId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/cash/mine/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/cash/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/cash/mine/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/cash/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/cash/set-status-as-to-change/:id, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/cash/set-status-as-ok/:id, HEAD} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/cash/mine/file/:cashId, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/cash/file/:cashId, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mCheckController {/check}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/check/mine/file/:checkId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/check/file/:checkId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/check/mine/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/check/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/check/mine/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/check/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/check/set-status-as-to-change/:id, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/check/set-status-as-ok/:id, HEAD} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/check/mine/file/:checkId, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/check/file/:checkId, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mCreditNoteController {/creditNote}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/creditNote/mine/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/creditNote/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/creditNote/mine/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/creditNote/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/creditNote/set-status-as-to-change/:id, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/creditNote/set-status-as-ok/:id, HEAD} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mCreditController {/credit}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/credit/mine/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/credit/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/credit/mine/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/credit/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/credit/set-status-as-to-change/:id, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/credit/set-status-as-ok/:id, HEAD} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mDepositController {/deposit}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/deposit/mine/file/:depositId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/deposit/file/:depositId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/deposit/mine/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/deposit/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/deposit/mine/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/deposit/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/deposit/set-status-as-to-change/:id, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/deposit/set-status-as-ok/:id, HEAD} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/deposit/mine/file/:depositId, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/deposit/file/:depositId, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mRetentionController {/retention}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/retention/mine/file/:cashId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/retention/file/:cashId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/retention/mine/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/retention/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/retention/mine/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/retention/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/retention/set-status-as-to-change/:id, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/retention/set-status-as-ok/:id, HEAD} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/retention/mine/file/:retentionId, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/retention/file/:retentionId, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mClientController {/client}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/client, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/client, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/client/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/client/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/client/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +49ms[39m
+[32m[Nest] 5400  - [39m11/03/2024, 12:28:19 [32m    LOG[39m [32mApp running on port 3000, version: 2.0[39m

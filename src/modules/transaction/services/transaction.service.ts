@@ -59,6 +59,7 @@ import { LogFields } from 'src/common/entities/log-fields';
 import { StorageService } from 'src/storage-service/storage.service';
 import { saveTransactionFiles } from '../helpers/save-transaction-files.helper';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { stat } from 'fs';
 
 @Injectable()
 export class TransactionService
@@ -285,9 +286,54 @@ export class TransactionService
 
     const [data, count] = await queryBuilder.getManyAndCount();
 
+    const newData = data.map((d) => {
+      let status: TRANSACTION_STATUS_ENUM;
+      const statusOrder = [
+        TRANSACTION_STATUS_ENUM.TO_CHANGE,
+        TRANSACTION_STATUS_ENUM.EDITED,
+        TRANSACTION_STATUS_ENUM.PENDING,
+        TRANSACTION_STATUS_ENUM.OK,
+      ];
+
+      for (let i = 0; i < statusOrder.length; i++) {
+        if (d.check_status == statusOrder[i]) {
+          status = statusOrder[i];
+          break;
+        }
+        if (d.cash_status == statusOrder[i]) {
+          status = statusOrder[i];
+          break;
+        }
+        if (d.credit_status == statusOrder[i]) {
+          status = statusOrder[i];
+          break;
+        }
+        if (d.credit_note_status == statusOrder[i]) {
+          status = statusOrder[i];
+          break;
+        }
+        if (d.deposit_status == statusOrder[i]) {
+          status = statusOrder[i];
+          break;
+        }
+        if (d.retention_status == statusOrder[i]) {
+          status = statusOrder[i];
+          break;
+        }
+        if (d.credit_status == statusOrder[i]) {
+          status = statusOrder[i];
+          break;
+        }
+      }
+      return {
+        ...d,
+        status: status,
+      };
+    });
+
     const totalPages = Math.ceil(count / limit);
 
-    return { data, count, totalPages };
+    return { data: newData, count, totalPages };
   }
   entityName: string = Transaction.name;
   private readonly itemTransactionRelations: FindOptionsRelations<
