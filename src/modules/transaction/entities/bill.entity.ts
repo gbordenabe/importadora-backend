@@ -53,10 +53,10 @@ export class Bill extends LogFields implements IItemTransaction {
   @Column({ length: 20 })
   number: string;
 
-  @ApiProperty({ description: 'numeric(10, 2)' })
+  @ApiProperty({ description: 'numeric(20, 2)' })
   @Column({
     type: 'numeric',
-    precision: 10,
+    precision: 20,
     scale: 2,
     transformer: numericOrNullTransformer,
   })

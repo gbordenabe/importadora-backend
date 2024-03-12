@@ -174,7 +174,7 @@ export class FindAllTransactionsDto {
       'Monto minimo en facturas, se buscaran las transacciones con minimo una factura con monto mayor o igual a este. numeric(10, 2)',
   })
   @EmptyToUndefined()
-  @IsNumeric({ precision: 10, maxDecimalPlaces: 2 })
+  @IsNumeric({ precision: 20, maxDecimalPlaces: 2 })
   @IsOptional()
   bill_amount_min: number;
 
@@ -185,7 +185,7 @@ export class FindAllTransactionsDto {
       'Monto minimo en pagos, se buscaran las transacciones con minimo un cheque con monto mayor o igual a este. numeric(10, 2)',
   })
   @EmptyToUndefined()
-  @IsNumeric({ precision: 10, maxDecimalPlaces: 2 })
+  @IsNumeric({ precision: 20, maxDecimalPlaces: 2 })
   @IsOptional()
   check_amount_min: number;
 
@@ -193,7 +193,7 @@ export class FindAllTransactionsDto {
     type: 'number',
   })
   @EmptyToUndefined()
-  @IsNumeric({ precision: 10, maxDecimalPlaces: 2 })
+  @IsNumeric({ precision: 20, maxDecimalPlaces: 2 })
   @IsOptional()
   total_amount_min: number;
 
@@ -204,7 +204,7 @@ export class FindAllTransactionsDto {
       'Monto minimo en balance, se buscaran las transacciones con minimo un deposito con monto mayor o igual a este. numeric(10, 2)',
   })
   @EmptyToUndefined()
-  @IsNumeric({ precision: 10, maxDecimalPlaces: 2 })
+  @IsNumeric({ precision: 20, maxDecimalPlaces: 2 })
   @IsOptional()
   deposit_amount_min: number;
 
@@ -214,7 +214,7 @@ export class FindAllTransactionsDto {
       'Monto minimo en balance, se buscaran las transacciones con minimo un EFECTIVO con monto mayor o igual a este. numeric(10, 2)',
   })
   @EmptyToUndefined()
-  @IsNumeric({ precision: 10, maxDecimalPlaces: 2 })
+  @IsNumeric({ precision: 20, maxDecimalPlaces: 2 })
   @IsOptional()
   cash_amount_min: number;
 
@@ -224,7 +224,7 @@ export class FindAllTransactionsDto {
       'Monto minimo en pagos, se buscaran las transacciones con minimo un credito con monto mayor o igual a este. numeric(10, 2)',
   })
   @EmptyToUndefined()
-  @IsNumeric({ precision: 10, maxDecimalPlaces: 2 })
+  @IsNumeric({ precision: 20, maxDecimalPlaces: 2 })
   @IsOptional()
   credit_amount_min: number;
 
@@ -234,7 +234,7 @@ export class FindAllTransactionsDto {
       'Monto minimo en pagos, se buscaran las transacciones con minimo una nota de credito con monto mayor o igual a este. numeric(10, 2)',
   })
   @EmptyToUndefined()
-  @IsNumeric({ precision: 10, maxDecimalPlaces: 2 })
+  @IsNumeric({ precision: 20, maxDecimalPlaces: 2 })
   @IsOptional()
   credit_note_amount_min: number;
 
@@ -244,7 +244,7 @@ export class FindAllTransactionsDto {
       'Monto minimo en pagos, se buscaran las transacciones con minimo una retencion con monto mayor o igual a este. numeric(10, 2)',
   })
   @EmptyToUndefined()
-  @IsNumeric({ precision: 10, maxDecimalPlaces: 2 })
+  @IsNumeric({ precision: 20, maxDecimalPlaces: 2 })
   @IsOptional()
   retention_amount_min: number;
 

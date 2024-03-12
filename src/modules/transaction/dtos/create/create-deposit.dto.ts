@@ -10,8 +10,8 @@ export class CreateDepositDto implements CreatePaymentDto {
   @MaxLength(25)
   document_number: string;
 
-  @ApiProperty({ description: 'numeric(10, 2)' })
-  @IsNumeric({ precision: 10, maxDecimalPlaces: 2 })
+  @ApiProperty({ description: 'numeric(20, 2)' })
+  @IsNumeric({ precision: 20, maxDecimalPlaces: 2 })
   amount: number;
 
   @ApiProperty()

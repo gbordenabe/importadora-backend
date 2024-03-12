@@ -100,36 +100,36 @@ export class Transaction extends LogFields {
   })
   retention_status: TRANSACTION_STATUS_ENUM;
 
-  @ApiProperty({ type: 'integer' })
-  @Column({ type: 'integer', nullable: true })
+  @ApiProperty({ type: 'numeric(20, 2)' })
+  @Column({ type: 'numeric', precision: 20, scale: 2, nullable: true })
   total_checks: number;
 
-  @ApiProperty({ type: 'integer' })
-  @Column({ type: 'integer', nullable: true })
+  @ApiProperty({ type: 'numeric(20, 2)' })
+  @Column({ type: 'numeric', precision: 20, scale: 2, nullable: true })
   total_deposit: number;
 
-  @ApiProperty({ type: 'integer' })
-  @Column({ type: 'integer', nullable: true })
+  @ApiProperty({ type: 'numeric' })
+  @Column({ type: 'numeric', precision: 20, scale: 2, nullable: true })
   total_cash: number;
 
-  @ApiProperty({ type: 'integer' })
-  @Column({ type: 'integer', nullable: true })
+  @ApiProperty({ type: 'numeric' })
+  @Column({ type: 'numeric', precision: 20, scale: 2, nullable: true })
   total_credit: number;
 
-  @ApiProperty({ type: 'integer' })
-  @Column({ type: 'integer', nullable: true })
+  @ApiProperty({ type: 'numeric' })
+  @Column({ type: 'numeric', precision: 20, scale: 2, nullable: true })
   total_credit_note: number;
 
-  @ApiProperty({ type: 'integer' })
-  @Column({ type: 'integer', nullable: true })
+  @ApiProperty({ type: 'numeric' })
+  @Column({ type: 'numeric', precision: 20, scale: 2, nullable: true })
   total_retention: number;
 
-  @ApiProperty({ type: 'integer' })
-  @Column({ type: 'integer', nullable: true })
+  @ApiProperty({ type: 'numeric' })
+  @Column({ type: 'numeric', precision: 20, scale: 2, nullable: true })
   total_bill: number;
 
-  @ApiProperty({ type: 'integer' })
-  @Column({ type: 'integer', nullable: true })
+  @ApiProperty({ type: 'numeric' })
+  @Column({ type: 'numeric', precision: 20, scale: 2, nullable: true })
   total_amount: number;
 
   @ApiProperty({ type: () => User })

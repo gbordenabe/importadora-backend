@@ -54,8 +54,8 @@ export class Payment implements LogFields {
   updated_at: Date;
 
   //amount 10, 2 not null
-  @ApiProperty({ description: 'numeric(10, 2)' })
-  @Column({ type: 'numeric', precision: 10, scale: 2 })
+  @ApiProperty({ description: 'numeric(20, 2)' })
+  @Column({ type: 'numeric', precision: 20, scale: 2 })
   amount: number;
 
   @ApiProperty({ type: Date })

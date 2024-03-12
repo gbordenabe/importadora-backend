@@ -12,8 +12,8 @@ import { AllowNulls } from 'src/common/decorators/allow-null.decorator';
 import { IsNumeric } from 'src/common/decorators/is_numeric.decorator';
 
 export class CreateCreditDto implements CreateBalanceDto {
-  @ApiProperty({ description: 'numeric(10, 2)' })
-  @IsNumeric({ precision: 10, maxDecimalPlaces: 2 })
+  @ApiProperty({ description: 'numeric(20, 2)' })
+  @IsNumeric({ precision: 20, maxDecimalPlaces: 2 })
   amount: number;
 
   @ApiProperty()

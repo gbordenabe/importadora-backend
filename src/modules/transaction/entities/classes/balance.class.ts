@@ -50,10 +50,10 @@ export class Balance implements LogFields {
   })
   updated_at: Date;
 
-  @ApiProperty({ description: 'numeric(10, 2)' })
+  @ApiProperty({ description: 'numeric(20, 2)' })
   @Column({
     type: 'numeric',
-    precision: 10,
+    precision: 20,
     scale: 2,
     transformer: numericOrNullTransformer,
   })
