@@ -70,7 +70,7 @@ export class UsuariosController {
   @ApiOperation({
     summary: 'Buscar usuarios por nombre y apellido',
     description:
-      'Se busca usuarios por nombre y apellido por query params. Solo para roles de tesorero.',
+      'Se busca usuarios por nombre y apellido por query params ejemplo /user/find-by-full-name?fullName=Casabuena Sofia. Solo para roles de tesorero.',
   })
   @ApiNotFoundImplementation()
   @ApiOkResponseImplementation()
