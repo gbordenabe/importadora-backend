@@ -375,6 +375,17 @@ export class TransactionService
       throw new NotFoundException(`Transaction with id ${id} not found`);
     return transaction;
   }
+
+  findAmounts(amount: number, requestUser?: User): Promise<Transaction[]> {
+    const transaction = this.transactionRepository.find({
+      where: { total_amount: amount, created_by: getOptionalUser(requestUser) },
+      relations: this.relations ? this.relations : [],
+    });
+    if (!transaction)
+      throw new NotFoundException(`Transaction with id ${amount} not found`);
+    return transaction;
+  }
+
   private setTransactionLogsBeforeToSave(
     transaction: Transaction,
     requestUser: User,

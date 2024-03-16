@@ -16,7 +16,12 @@ import { ROLE_NAME_ENUM } from 'src/modules/role/entities/role_name.enum';
 import { User } from 'src/modules/user/entities/user.entity';
 import { CreateTransactionDto } from '../dtos/create/create-transaction.dto';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   ApiBadRequestResponseImplementation,
   ApiCreatedResponseImplementation,
@@ -103,6 +108,39 @@ export class TransactionController {
     @GetUser() user: User,
   ) {
     return await this.transactionService.findOneById({ id }, user);
+  }
+
+  @ApiOkResponseImplementation({ type: Transaction })
+  @ApiOkResponse({ type: Transaction, isArray: true })
+  @ApiOperation({
+    summary: 'Busca todos las transacciones del usuario logueado',
+    description:
+      'Se envia por el QueryParam el monto de la transacción que se quiere buscar ejemplo: /transaction/amount-all?amount=1000',
+  })
+  @ApiNotFoundImplementation()
+  @Auth()
+  @Get('amount')
+  async findByAmount(
+    @Query('amount', ParseIntPipe) amount: number,
+    @GetUser() user: User,
+  ): Promise<Transaction[]> {
+    return await this.transactionService.findAmounts(amount, user);
+  }
+
+  @ApiOkResponseImplementation({ type: Transaction })
+  @ApiOkResponse({ type: Transaction, isArray: true })
+  @ApiOperation({
+    summary: 'Busca todos las transacciones de todos los vendedores',
+    description:
+      'Se envia por el QueryParam el monto de la transacción que se quiere buscar ejemplo: /transaction/amount-all?amount=1000',
+  })
+  @ApiNotFoundImplementation()
+  @Auth(ROLE_NAME_ENUM.TREASURER)
+  @Get('amount-all')
+  async findByAmountAll(
+    @Query('amount', ParseIntPipe) amount: number,
+  ): Promise<Transaction[]> {
+    return await this.transactionService.findAmounts(amount);
   }
 
   @ApiOkResponseImplementation({ type: Transaction })

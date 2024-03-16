@@ -88,6 +88,22 @@ export class ClientService
       handleExceptions(error, this.entityName);
     }
   }
+
+  async findOneClient(client: string): Promise<Client[]> {
+    const terminos = client.trim().split(/\s+/);
+
+    let query = this.clientRepository.createQueryBuilder('c');
+
+    // Construir una consulta que exija que todos los términos coincidan
+    terminos.forEach((term, index) => {
+      query = query.andWhere(
+        `(LOWER(c.name) LIKE :term${index} OR LOWER(c.client_number) LIKE :term${index})`,
+        { [`term${index}`]: `%${term.toLowerCase()}%` },
+      );
+    });
+
+    return await query.getMany();
+  }
   async removeOneById(id: number): Promise<void> {
     await this.findOneById({ id });
     await this.clientRepository.update(id, { is_active: false });

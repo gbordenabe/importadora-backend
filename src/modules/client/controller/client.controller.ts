@@ -48,6 +48,19 @@ export class ClientController {
     return await this.clientService.findAll(queryParams);
   }
 
+  @ApiOperation({
+    summary: 'Se obtiene clientes',
+    description: `se obtiene clientes por queryparams ejemplo client/one-client?client=1234 Cliente`,
+  })
+  @ApiOkResponseImplementation({
+    type: Client,
+  })
+  @Auth(ROLE_NAME_ENUM.TREASURER)
+  @Get('/one-client')
+  async findOne(@Query('client') client: string) {
+    return await this.clientService.findOneClient(client);
+  }
+
   @ApiCreatedResponseImplementation(Client)
   @ApiOperation({
     summary: 'Create client',

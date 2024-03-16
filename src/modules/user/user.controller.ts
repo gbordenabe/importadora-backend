@@ -13,7 +13,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-usuario.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   ApiBadRequestResponseImplementation,
   ApiCreatedResponseImplementation,
@@ -27,6 +27,7 @@ import { User } from './entities/user.entity';
 import { Auth, GetUser } from 'src/auth/decorators';
 import { FindAndCountUsersDto } from './dto/find-and-count-users.dto';
 import { FindAllUsersQueryDto } from './dto/find-all-users-query.dto';
+import { ROLE_NAME_ENUM } from '../role/entities/role_name.enum';
 @ApiTags('User')
 @ApiUnauthorizedResponseImplementation()
 @ApiBadRequestResponseImplementation()
@@ -64,6 +65,19 @@ export class UsuariosController {
   @Get()
   findAll(@Query() queryParams: FindAllUsersQueryDto) {
     return this.userService.findAll(queryParams);
+  }
+
+  @ApiOperation({
+    summary: 'Buscar usuarios por nombre y apellido',
+    description:
+      'Se busca usuarios por nombre y apellido por query params. Solo para roles de tesorero.',
+  })
+  @ApiNotFoundImplementation()
+  @ApiOkResponseImplementation()
+  @Auth(ROLE_NAME_ENUM.TREASURER)
+  @Get('find-by-full-name')
+  async FindUser(@Query('fullName') fullName: string): Promise<User[]> {
+    return await this.userService.findUser(fullName);
   }
 
   //get my perfil

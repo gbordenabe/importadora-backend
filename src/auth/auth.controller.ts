@@ -7,6 +7,7 @@ import {
   Get,
   Param,
   Head,
+  Query,
 } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
@@ -21,6 +22,7 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { RefreshTokenDto } from './dto/refres-token.dto';
 import { RecoverPasswordByEmailDto } from './dto/recover-password-by-email.dto';
 import { Auth } from './decorators';
+import { ROLE_NAME_ENUM } from 'src/modules/role/entities/role_name.enum';
 
 @ApiTags('Auth')
 @Controller('auth')
