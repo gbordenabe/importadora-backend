@@ -324,6 +324,10 @@ export class TransactionService
           status = statusOrder[i];
           break;
         }
+        if (d.bill_status == statusOrder[i]) {
+          status = statusOrder[i];
+          break;
+        }
       }
       return {
         ...d,

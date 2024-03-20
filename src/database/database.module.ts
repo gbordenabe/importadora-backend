@@ -18,7 +18,7 @@ import { RoleModule } from 'src/modules/role/role.module';
           username: process.env.DB_USERNAME,
           password: process.env.DB_PASSWORD,
           entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-          dropSchema: true,
+          dropSchema: false,
           autoLoadEntities: true,
           synchronize: true,
         };
