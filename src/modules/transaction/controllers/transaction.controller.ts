@@ -111,39 +111,6 @@ export class TransactionController {
   }
 
   @ApiOkResponseImplementation({ type: Transaction })
-  @ApiOkResponse({ type: Transaction, isArray: true })
-  @ApiOperation({
-    summary: 'Busca todos las transacciones del usuario logueado',
-    description:
-      'Se envia por el QueryParam el monto de la transacción que se quiere buscar ejemplo: /transaction/amount-all?amount=1000',
-  })
-  @ApiNotFoundImplementation()
-  @Auth()
-  @Get('amount')
-  async findByAmount(
-    @Query('amount', ParseIntPipe) amount: number,
-    @GetUser() user: User,
-  ): Promise<Transaction[]> {
-    return await this.transactionService.findAmounts(amount, user);
-  }
-
-  @ApiOkResponseImplementation({ type: Transaction })
-  @ApiOkResponse({ type: Transaction, isArray: true })
-  @ApiOperation({
-    summary: 'Busca todos las transacciones de todos los vendedores',
-    description:
-      'Se envia por el QueryParam el monto de la transacción que se quiere buscar ejemplo: /transaction/amount-all?amount=1000',
-  })
-  @ApiNotFoundImplementation()
-  @Auth(ROLE_NAME_ENUM.TREASURER)
-  @Get('amount-all')
-  async findByAmountAll(
-    @Query('amount', ParseIntPipe) amount: number,
-  ): Promise<Transaction[]> {
-    return await this.transactionService.findAmounts(amount);
-  }
-
-  @ApiOkResponseImplementation({ type: Transaction })
   @ApiNotFoundImplementation()
   @ApiForbiddenResponseImplementation()
   @Auth(ROLE_NAME_ENUM.TREASURER)

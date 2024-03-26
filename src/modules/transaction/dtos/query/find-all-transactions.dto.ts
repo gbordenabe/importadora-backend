@@ -249,6 +249,15 @@ export class FindAllTransactionsDto {
   retention_amount_min: number;
 
   @ApiPropertyOptional({
+    type: 'number',
+    description: 'Monto total de la transacción. numeric(10, 2)',
+  })
+  @EmptyToUndefined()
+  @IsNumeric({ precision: 20, maxDecimalPlaces: 2 })
+  @IsOptional()
+  total_amount: number;
+
+  @ApiPropertyOptional({
     enum: ORDER_ENUM,
     default: ORDER_ENUM.ASC,
   })

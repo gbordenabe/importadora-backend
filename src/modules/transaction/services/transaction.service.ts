@@ -158,6 +158,11 @@ export class TransactionService
       queryBuilder.andWhere(`transaction.id IN (${subQuery.getQuery()})`);
       queryBuilder.setParameters(subQuery.getParameters());
     }
+    if (filters.total_amount !== undefined) {
+      queryBuilder.andWhere('transaction.total_amount = :total_amount', {
+        total_amount: filters.total_amount,
+      });
+    }
     setFieldInQueryBuilder({
       field: 'created_by.id',
       values: sellers,
@@ -390,16 +395,6 @@ export class TransactionService
     });
     if (!transaction)
       throw new NotFoundException(`Transaction with id ${id} not found`);
-    return transaction;
-  }
-
-  findAmounts(amount: number, requestUser?: User): Promise<Transaction[]> {
-    const transaction = this.transactionRepository.find({
-      where: { total_amount: amount, created_by: getOptionalUser(requestUser) },
-      relations: this.relations ? this.relations : [],
-    });
-    if (!transaction)
-      throw new NotFoundException(`Transaction with id ${amount} not found`);
     return transaction;
   }
 
