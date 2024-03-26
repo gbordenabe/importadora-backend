@@ -367,6 +367,19 @@ export class TransactionService
     deposits: this.itemTransactionWithFileRelations,
     retentions: this.itemTransactionWithFileRelations,
   };
+
+  download(
+    { id, relations = true }: IFindOneByIdOptions,
+    requestUser?: User,
+  ): Promise<Transaction> {
+    const transaction = this.transactionRepository.findOne({
+      where: { id, created_by: getOptionalUser(requestUser) },
+      relations: relations ? this.relations : [],
+    });
+
+    return transaction;
+  }
+
   findOneById(
     { id, relations = true }: IFindOneByIdOptions,
     requestUser?: User,

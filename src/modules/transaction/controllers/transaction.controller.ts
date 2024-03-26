@@ -152,6 +152,14 @@ export class TransactionController {
     return await this.transactionService.findOneById({ id });
   }
 
+  @ApiOkResponseImplementation({ type: Transaction })
+  @ApiNotFoundImplementation()
+  @ApiForbiddenResponseImplementation()
+  @Auth(ROLE_NAME_ENUM.TREASURER)
+  @Get(':id')
+  async findAndDownload(@Param('id', ParseIntPipe) id: number) {
+    return await this.transactionService.download({ id });
+  }
   @ApiOkResponseImplementation({
     method: 'delete',
   })
