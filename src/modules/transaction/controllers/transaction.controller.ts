@@ -123,9 +123,9 @@ export class TransactionController {
   @ApiNotFoundImplementation()
   @ApiForbiddenResponseImplementation()
   @Auth(ROLE_NAME_ENUM.TREASURER)
-  @Get(':id')
-  async findAndDownload(@Param('id', ParseIntPipe) id: number) {
-    return await this.transactionService.download({ id });
+  @Post('download/:id')
+  async getTransactionFiles(@Param('id') id: number) {
+    return this.transactionService.getTransactionFiles(id);
   }
   @ApiOkResponseImplementation({
     method: 'delete',

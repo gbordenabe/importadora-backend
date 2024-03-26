@@ -59,8 +59,15 @@ import { LogFields } from 'src/common/entities/log-fields';
 import { StorageService } from 'src/storage-service/storage.service';
 import { saveTransactionFiles } from '../helpers/save-transaction-files.helper';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { stat } from 'fs';
+import { S3 } from 'aws-sdk';
+import { createReadStream, createWriteStream, unlinkSync } from 'fs';
+import * as archiver from 'archiver';
+import { v4 as uuidv4 } from 'uuid';
+import { promisify } from 'util';
+import { pipeline } from 'stream';
+import fetch from 'node-fetch';
 
+const streamPipeline = promisify(pipeline);
 @Injectable()
 export class TransactionService
   implements
@@ -373,17 +380,122 @@ export class TransactionService
     retentions: this.itemTransactionWithFileRelations,
   };
 
-  download(
-    { id, relations = true }: IFindOneByIdOptions,
-    requestUser?: User,
-  ): Promise<Transaction> {
-    const transaction = this.transactionRepository.findOne({
-      where: { id, created_by: getOptionalUser(requestUser) },
-      relations: relations ? this.relations : [],
+  async getTransactionFiles(transactionId: number) {
+    const s3 = new S3({
+      region: 'sa-east-1',
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     });
 
-    return transaction;
+    const filesTransactions = await this.transactionRepository.find({
+      where: { id: transactionId },
+      relations: [
+        'cash',
+        'deposits',
+        'checks',
+        'retentions',
+        'deposits.file',
+        'cash.file',
+        'checks.file',
+        'retentions.file',
+      ],
+    });
+
+    const filesNamesTransactions = filesTransactions
+      .map((t) => [
+        ...t.cash?.map((c) => c.file.file_name),
+        ...t.deposits?.map((d) => d.file.file_name),
+        ...t.checks?.map((c) => c.file.file_name),
+        ...t.retentions?.map((r) => r.file.file_name),
+      ])
+      .flat();
+
+    // Descargar los archivos y agregarlos al archivo ZIP
+    const zipFileName = `transaction_${transactionId}_${uuidv4()}.zip`;
+    const output = createWriteStream(zipFileName);
+    const archive = archiver('zip', { zlib: { level: 9 } });
+
+    archive.pipe(output);
+
+    for (const fileName of filesNamesTransactions) {
+      const fileStream = s3
+        .getObject({
+          Bucket: 'importadora-prod',
+          Key: fileName,
+        })
+        .createReadStream();
+
+      archive.append(fileStream, { name: fileName });
+    }
+
+    await archive.finalize();
+
+    // Subir el archivo ZIP a S3
+    const uploadedZip = await s3
+      .upload({
+        Bucket: 'importadora-prod',
+        Key: `zips/${zipFileName}`,
+        Body: createReadStream(zipFileName),
+      })
+      .promise();
+
+    // Generar una URL firmada para el archivo ZIP
+    const signedUrl = s3.getSignedUrl('getObject', {
+      Bucket: 'importadora-prod',
+      Key: `zips/${zipFileName}`,
+      Expires: 60 * 5, // URL válida por 5 minutos
+    });
+
+    // Eliminar el archivo ZIP temporal del servidor
+    unlinkSync(zipFileName);
+
+    return signedUrl;
   }
+
+  /*async getTransactionFiles(transactionId: number) {
+    const s3 = new S3({
+      region: 'sa-east-1',
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    });
+
+    // Suponiendo que estás en un servicio y tienes los repositorios inyectados apropiadamente.
+    const filesTransactions = await this.transactionRepository.find({
+      where: { id: transactionId },
+      relations: [
+        'cash',
+        'deposits',
+        'checks',
+        'retentions',
+        'deposits.file',
+        'cash.file',
+        'checks.file',
+        'retentions.file',
+      ], // Asume que 'cash' tiene una relación directa con 'file'
+    });
+    const filesNamesTransactions = filesTransactions
+      .map((t) => [
+        ...t.cash?.map((c) => c.file.file_name),
+        ...t.deposits?.map((d) => d.file.file_name),
+        ...t.checks?.map((c) => c.file.file_name),
+        ...t.retentions?.map((r) => r.file.file_name),
+      ])
+      .flat();
+
+    // Generar las URLs para descargar.
+    const urls = filesNamesTransactions.map((fileName) => {
+      return s3.getSignedUrl('getObject', {
+        Bucket: 'importadora-prod',
+        Key: fileName,
+        Expires: 60 * 5, // URL válida por 5 minutos
+      });
+    });
+
+
+
+    //return urls.filter((url) => url); // Filtrar los undefined por si hay algún método de pago sin archivo.
+    return urls;
+  } */
 
   findOneById(
     { id, relations = true }: IFindOneByIdOptions,

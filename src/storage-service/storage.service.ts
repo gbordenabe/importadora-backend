@@ -6,6 +6,7 @@ import {
   GetObjectCommand,
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
+
 @Injectable()
 export class StorageService implements OnModuleInit {
   private readonly uploadPath: string = process.env.UPLOADS_FOLDER;
