@@ -44,11 +44,13 @@ export class ClientService
       where: [
         {
           ...defaultQuery,
-          name: nameFilter ? ILike(`%${nameFilter.toLowerCase()}%`) : undefined,
+          business_name: nameFilter
+            ? ILike(`%${nameFilter.toLowerCase()}%`)
+            : undefined,
         },
         {
           ...defaultQuery,
-          business_name: nameFilter
+          client_number: nameFilter
             ? ILike(`%${nameFilter.toLowerCase()}%`)
             : undefined,
         },

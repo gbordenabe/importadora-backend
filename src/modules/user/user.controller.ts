@@ -67,19 +67,6 @@ export class UsuariosController {
     return this.userService.findAll(queryParams);
   }
 
-  @ApiOperation({
-    summary: 'Buscar usuarios por nombre y apellido',
-    description:
-      'Se busca usuarios por nombre y apellido por query params ejemplo /user/find-by-full-name?fullName=Casabuena Sofia. Solo para roles de tesorero.',
-  })
-  @ApiNotFoundImplementation()
-  @ApiOkResponseImplementation()
-  @Auth(ROLE_NAME_ENUM.TREASURER)
-  @Get('find-by-full-name')
-  async FindUser(@Query('fullName') fullName: string): Promise<User[]> {
-    return await this.userService.findUser(fullName);
-  }
-
   //get my perfil
   @ApiOkResponseImplementation({ type: User })
   @Auth()

@@ -97,22 +97,6 @@ export class UserService
     return { data, count };
   }
 
-  async findUser(fullName: string): Promise<User[]> {
-    const terminos = fullName.trim().split(/\s+/);
-
-    let query = this.userRepository.createQueryBuilder('u');
-
-    // Construir una consulta que exija que todos los términos coincidan
-    terminos.forEach((term, index) => {
-      query = query.andWhere(
-        `(LOWER(u.name) LIKE :term${index} OR LOWER(u.last_name) LIKE :term${index})`,
-        { [`term${index}`]: `%${term.toLowerCase()}%` },
-      );
-    });
-
-    return await query.getMany();
-  }
-
   async sendPersonalEmailVerificationCode(email: string) {
     if (!email) throw new BadRequestException('Email is required');
     const user = await this.userRepository.findOne({

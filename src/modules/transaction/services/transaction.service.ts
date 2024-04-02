@@ -452,51 +452,6 @@ export class TransactionService
     return signedUrl;
   }
 
-  /*async getTransactionFiles(transactionId: number) {
-    const s3 = new S3({
-      region: 'sa-east-1',
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    });
-
-    // Suponiendo que estás en un servicio y tienes los repositorios inyectados apropiadamente.
-    const filesTransactions = await this.transactionRepository.find({
-      where: { id: transactionId },
-      relations: [
-        'cash',
-        'deposits',
-        'checks',
-        'retentions',
-        'deposits.file',
-        'cash.file',
-        'checks.file',
-        'retentions.file',
-      ], // Asume que 'cash' tiene una relación directa con 'file'
-    });
-    const filesNamesTransactions = filesTransactions
-      .map((t) => [
-        ...t.cash?.map((c) => c.file.file_name),
-        ...t.deposits?.map((d) => d.file.file_name),
-        ...t.checks?.map((c) => c.file.file_name),
-        ...t.retentions?.map((r) => r.file.file_name),
-      ])
-      .flat();
-
-    // Generar las URLs para descargar.
-    const urls = filesNamesTransactions.map((fileName) => {
-      return s3.getSignedUrl('getObject', {
-        Bucket: 'importadora-prod',
-        Key: fileName,
-        Expires: 60 * 5, // URL válida por 5 minutos
-      });
-    });
-
-
-
-    //return urls.filter((url) => url); // Filtrar los undefined por si hay algún método de pago sin archivo.
-    return urls;
-  } */
-
   findOneById(
     { id, relations = true }: IFindOneByIdOptions,
     requestUser?: User,
