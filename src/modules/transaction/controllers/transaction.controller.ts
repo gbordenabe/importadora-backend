@@ -123,6 +123,15 @@ export class TransactionController {
   @ApiNotFoundImplementation()
   @ApiForbiddenResponseImplementation()
   @Auth(ROLE_NAME_ENUM.TREASURER)
+  @Get('history/:id')
+  async getHistoryTransaction(@Param('id') id: number) {
+    return await this.transactionService.historysTransactions(id);
+  }
+
+  @ApiOkResponseImplementation({ type: Transaction })
+  @ApiNotFoundImplementation()
+  @ApiForbiddenResponseImplementation()
+  @Auth(ROLE_NAME_ENUM.TREASURER)
   @Post('download/:id')
   async getTransactionFiles(@Param('id') id: number) {
     return this.transactionService.getTransactionFiles(id);

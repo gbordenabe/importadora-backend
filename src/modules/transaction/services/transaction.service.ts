@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from '../entities/transaction.entity';
 import { FindOptionsRelations, Repository } from 'typeorm';
 import {
-  IFindAndCountResult,
   IFindOneByIdOptions,
   IServiceInterface,
 } from 'src/common/interfaces/service.interface';
@@ -65,7 +64,9 @@ import * as archiver from 'archiver';
 import { v4 as uuidv4 } from 'uuid';
 import { promisify } from 'util';
 import { pipeline } from 'stream';
-import fetch from 'node-fetch';
+import { History } from 'src/modules/history/entities/history.entity';
+import { GetPaymentType } from '../helpers/verify-type';
+import { IHistoryResponse } from '../entities/interfaces/history-transaction.interface';
 
 const streamPipeline = promisify(pipeline);
 @Injectable()
@@ -83,6 +84,8 @@ export class TransactionService
   constructor(
     @InjectRepository(Transaction)
     private readonly transactionRepository: Repository<Transaction>,
+    @InjectRepository(History)
+    private readonly historyRepository: Repository<History>,
     private readonly companyService: CompanyService,
     private readonly billService: BillService,
     private readonly checkService: CheckService,
@@ -452,11 +455,11 @@ export class TransactionService
     return signedUrl;
   }
 
-  findOneById(
+  async findOneById(
     { id, relations = true }: IFindOneByIdOptions,
     requestUser?: User,
   ): Promise<Transaction> {
-    const transaction = this.transactionRepository.findOne({
+    const transaction = await this.transactionRepository.findOne({
       where: { id, created_by: getOptionalUser(requestUser) },
       relations: relations ? this.relations : [],
     });
@@ -527,6 +530,19 @@ export class TransactionService
         ...dtoVerified,
       });
       this.eventEmitter.emit('transaction.created', dtoVerified);
+
+      console.log('transaction', transaction);
+
+      const paymentType = GetPaymentType(transaction);
+
+      const history = new History();
+      history.transaction = transaction;
+      history.payment_type = paymentType;
+      history.statuses = TRANSACTION_STATUS_ENUM.PENDING;
+      history.created_by = requestUser;
+      history.created_at = new Date();
+      await this.historyRepository.save(history);
+
       return transaction;
     } catch (error) {
       handleExceptions(error, this.entityName);
@@ -661,5 +677,26 @@ export class TransactionService
     if (numberOfItemsWithOkStatus === map.length) {
       transaction.status = TRANSACTION_STATUS_ENUM.OK;
     }
+  }
+
+  async historysTransactions(id: number): Promise<IHistoryResponse[]> {
+    const history = await this.historyRepository.find({
+      where: { transaction: { id: id } },
+      relations: ['created_by', 'created_by.role'],
+    });
+    return history.map((history) => ({
+      id: history.id,
+      statuses: history.statuses,
+      payment_type: history.payment_type,
+      created_at: history.created_at,
+      data: history.data,
+      created_by: {
+        name: history.created_by.name,
+        last_name: history.created_by.last_name,
+        role: {
+          name: history.created_by.role.name,
+        },
+      },
+    }));
   }
 }

@@ -25,6 +25,7 @@ import { IUserLog } from 'src/common/interfaces/user-log.interface';
 import { CreditNote } from '../entities/credit-note.entity';
 import { CreateCreditNoteDto } from '../dtos/create/create-credit-note.dto';
 import { UpdateCreditNoteDto } from '../dtos/update/update-credit-note.dto';
+import { History } from 'src/modules/history/entities/history.entity';
 
 @Injectable()
 export class CreditNoteService
@@ -37,6 +38,8 @@ export class CreditNoteService
   constructor(
     @InjectRepository(CreditNote)
     private readonly creditNoteRepository: Repository<CreditNote>,
+    @InjectRepository(History)
+    private readonly historyRepository: Repository<History>,
     @Inject(forwardRef(() => TransactionService))
     private readonly transactionService: TransactionService,
   ) {}
@@ -82,6 +85,15 @@ export class CreditNoteService
         updatedCreditNote.transaction.id,
         this.transactionService,
       );
+
+      const history = new History();
+      history.transaction = updatedCreditNote.transaction;
+      history.payment_type = 'credit_note';
+      history.statuses = TRANSACTION_STATUS_ENUM.EDITED;
+      history.created_by = requestUser;
+      history.created_at = new Date();
+      await this.historyRepository.save(history);
+
       return updatedCreditNote;
     } catch (error) {
       handleExceptions(error, this.entityName);
@@ -114,6 +126,15 @@ export class CreditNoteService
     if (comment) {
       item.request_change_comment = comment;
     }
+
+    const history = new History();
+    history.transaction = item.transaction;
+    history.payment_type = 'credit_note';
+    history.statuses = status;
+    history.created_by = requestUser;
+    history.created_at = new Date();
+    await this.historyRepository.save(history);
+
     await this.creditNoteRepository.save(item);
     await handleAndSaveTransactionStatus(
       item.transaction.id,

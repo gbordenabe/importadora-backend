@@ -19,6 +19,7 @@ import { Cash } from './cash.entity';
 import { Credit } from './credit.entity';
 import { CreditNote } from './credit-note.entity';
 import { Retention } from './retention.entity';
+import { History } from 'src/modules/history/entities/history.entity';
 
 @Entity()
 export class Transaction extends LogFields {
@@ -187,4 +188,7 @@ export class Transaction extends LogFields {
     cascade: true,
   })
   retentions: Retention[];
+
+  @OneToMany(() => History, (history) => history.transaction)
+  histories: History[];
 }

@@ -34,6 +34,7 @@ import { DepositController } from './controllers/deposit.controller';
 import { RetentionController } from './controllers/retention.controller';
 import { StorageModule } from 'src/storage-service/storage.module';
 import { MultipartMiddleware } from 'src/common/middleware/multipart.middleware';
+import { History } from '../history/entities/history.entity';
 
 @Module({
   imports: [
@@ -46,7 +47,9 @@ import { MultipartMiddleware } from 'src/common/middleware/multipart.middleware'
       Credit,
       Deposit,
       Retention,
+      History,
     ]),
+
     CompanyModule,
     ClientModule,
     AuthModule,

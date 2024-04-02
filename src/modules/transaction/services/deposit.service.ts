@@ -28,6 +28,7 @@ import { UpdateDepositDto } from '../dtos/update/update-deposit.dto';
 import { getFileEntity } from 'src/storage-service/utils/get-file-entity.util';
 import { StorageService } from 'src/storage-service/storage.service';
 import { handleAndSetterFileEntityOnTransactionItem } from '../helpers/set-file-entity-on-transaction-item.helper';
+import { History } from 'src/modules/history/entities/history.entity';
 
 @Injectable()
 export class DepositService
@@ -40,6 +41,8 @@ export class DepositService
   constructor(
     @InjectRepository(Deposit)
     private readonly depositRepository: Repository<Deposit>,
+    @InjectRepository(History)
+    private readonly historyRepository: Repository<History>,
     @Inject(forwardRef(() => TransactionService))
     private readonly transactionService: TransactionService,
     private readonly storageService: StorageService,
@@ -126,6 +129,15 @@ export class DepositService
           },
           deposit.file?.file_name,
         );
+
+      const history = new History();
+      history.transaction = updatedDeposit.transaction;
+      history.payment_type = 'deposit';
+      history.statuses = TRANSACTION_STATUS_ENUM.EDITED;
+      history.created_by = requestUser;
+      history.created_at = new Date();
+      await this.historyRepository.save(history);
+
       return updatedDeposit;
     } catch (error) {
       handleExceptions(error, this.entityName);
@@ -170,6 +182,15 @@ export class DepositService
     if (comment) {
       item.request_change_comment = comment;
     }
+
+    const history = new History();
+    history.transaction = item.transaction;
+    history.payment_type = 'deposit';
+    history.statuses = status;
+    history.created_by = requestUser;
+    history.created_at = new Date();
+    await this.historyRepository.save(history);
+
     await this.depositRepository.save(item);
     await handleAndSaveTransactionStatus(
       item.transaction.id,

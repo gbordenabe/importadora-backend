@@ -25,6 +25,7 @@ import { TRANSACTION_STATUS_ENUM } from '../entities/enum/transaction-status-.en
 import { userRelations } from 'src/modules/user/user.service';
 import { IUserLog } from 'src/common/interfaces/user-log.interface';
 import { UpdateBillDto } from '../dtos/update/update-bill.dto';
+import { History } from 'src/modules/history/entities/history.entity';
 
 @Injectable()
 export class BillService
@@ -39,6 +40,8 @@ export class BillService
     private readonly billRepository: Repository<Bill>,
     @Inject(forwardRef(() => TransactionService))
     private readonly transactionService: TransactionService,
+    @InjectRepository(History)
+    private readonly historyRepository: Repository<History>,
   ) {}
   async findOneById(
     { id, relations = true }: IFindOneByIdOptions,
@@ -77,6 +80,14 @@ export class BillService
       item.transaction.id,
       this.transactionService,
     );
+
+    const history = new History();
+    history.transaction = item.transaction;
+    history.payment_type = 'bill';
+    history.statuses = status;
+    history.created_by = requestUser;
+    history.created_at = new Date();
+    await this.historyRepository.save(history);
   }
   async updateOneById(
     id: number,
@@ -106,6 +117,15 @@ export class BillService
         updatedBill.transaction.id,
         this.transactionService,
       );
+
+      const history = new History();
+      history.transaction = updatedBill.transaction;
+      history.payment_type = 'bill';
+      history.statuses = TRANSACTION_STATUS_ENUM.EDITED;
+      history.created_by = requestUser;
+      history.created_at = new Date();
+      await this.historyRepository.save(history);
+
       return updatedBill;
     } catch (error) {
       handleExceptions(error, this.entityName);

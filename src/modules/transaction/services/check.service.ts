@@ -28,6 +28,7 @@ import { UpdateCheckDto } from '../dtos/update/update-check.dto';
 import { handleAndSetterFileEntityOnTransactionItem } from '../helpers/set-file-entity-on-transaction-item.helper';
 import { getFileEntity } from 'src/storage-service/utils/get-file-entity.util';
 import { StorageService } from 'src/storage-service/storage.service';
+import { History } from 'src/modules/history/entities/history.entity';
 
 @Injectable()
 export class CheckService
@@ -40,6 +41,8 @@ export class CheckService
   constructor(
     @InjectRepository(Check)
     private readonly checkRepository: Repository<Check>,
+    @InjectRepository(History)
+    private readonly historyRepository: Repository<History>,
     @Inject(forwardRef(() => TransactionService))
     private readonly transactionService: TransactionService,
     private readonly storageService: StorageService,
@@ -101,6 +104,15 @@ export class CheckService
     if (comment) {
       item.request_change_comment = comment;
     }
+
+    const history = new History();
+    history.transaction = item.transaction;
+    history.payment_type = 'check ' + item.type;
+    history.statuses = status;
+    history.created_by = requestUser;
+    history.created_at = new Date();
+    await this.historyRepository.save(history);
+
     await this.checkRepository.save(item);
     await handleAndSaveTransactionStatus(
       item.transaction.id,
@@ -145,6 +157,15 @@ export class CheckService
           },
           check.file?.file_name,
         );
+
+      const history = new History();
+      history.transaction = updatedCheck.transaction;
+      history.payment_type = 'check ' + updatedCheck.type;
+      history.statuses = TRANSACTION_STATUS_ENUM.EDITED;
+      history.created_by = requestUser;
+      history.created_at = new Date();
+      await this.historyRepository.save(history);
+
       return updatedCheck;
     } catch (error) {
       handleExceptions(error, this.entityName);

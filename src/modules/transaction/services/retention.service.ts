@@ -28,6 +28,7 @@ import { UpdateRetentionDto } from '../dtos/update/update-retention.dto';
 import { handleAndSetterFileEntityOnTransactionItem } from '../helpers/set-file-entity-on-transaction-item.helper';
 import { getFileEntity } from 'src/storage-service/utils/get-file-entity.util';
 import { StorageService } from 'src/storage-service/storage.service';
+import { History } from 'src/modules/history/entities/history.entity';
 
 @Injectable()
 export class RetentionService
@@ -40,6 +41,8 @@ export class RetentionService
   constructor(
     @InjectRepository(Retention)
     private readonly retentionRepository: Repository<Retention>,
+    @InjectRepository(History)
+    private readonly historyRepository: Repository<History>,
     @Inject(forwardRef(() => TransactionService))
     private readonly transactionService: TransactionService,
     private readonly storageService: StorageService,
@@ -126,6 +129,15 @@ export class RetentionService
           },
           retention.file?.file_name,
         );
+
+      const history = new History();
+      history.transaction = updatedRetention.transaction;
+      history.payment_type = 'retention';
+      history.statuses = TRANSACTION_STATUS_ENUM.EDITED;
+      history.created_by = requestUser;
+      history.created_at = new Date();
+      await this.historyRepository.save(history);
+
       return updatedRetention;
     } catch (error) {
       handleExceptions(error, this.entityName);
@@ -170,6 +182,15 @@ export class RetentionService
     if (comment) {
       item.request_change_comment = comment;
     }
+
+    const history = new History();
+    history.transaction = item.transaction;
+    history.payment_type = 'retention';
+    history.statuses = status;
+    history.created_by = requestUser;
+    history.created_at = new Date();
+    await this.historyRepository.save(history);
+
     await this.retentionRepository.save(item);
     await handleAndSaveTransactionStatus(
       item.transaction.id,

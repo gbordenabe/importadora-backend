@@ -28,6 +28,7 @@ import { UpdateCashDto } from '../dtos/update/update-cash.dto';
 import { getFileEntity } from 'src/storage-service/utils/get-file-entity.util';
 import { StorageService } from 'src/storage-service/storage.service';
 import { handleAndSetterFileEntityOnTransactionItem } from '../helpers/set-file-entity-on-transaction-item.helper';
+import { History } from 'src/modules/history/entities/history.entity';
 
 @Injectable()
 export class CashService
@@ -40,6 +41,8 @@ export class CashService
   constructor(
     @InjectRepository(Cash)
     private readonly cashRepository: Repository<Cash>,
+    @InjectRepository(History)
+    private readonly historyRepository: Repository<History>,
     @Inject(forwardRef(() => TransactionService))
     private readonly transactionService: TransactionService,
     private readonly storageService: StorageService,
@@ -89,6 +92,15 @@ export class CashService
     if (comment) {
       item.request_change_comment = comment;
     }
+
+    const history = new History();
+    history.transaction = item.transaction;
+    history.payment_type = 'cash';
+    history.statuses = status;
+    history.created_by = requestUser;
+    history.created_at = new Date();
+    await this.historyRepository.save(history);
+
     await this.cashRepository.save(item);
     await handleAndSaveTransactionStatus(
       item.transaction.id,
@@ -147,6 +159,15 @@ export class CashService
           },
           cash.file?.file_name,
         );
+
+      const history = new History();
+      history.transaction = updatedCash.transaction;
+      history.payment_type = 'cash';
+      history.statuses = TRANSACTION_STATUS_ENUM.EDITED;
+      history.created_by = requestUser;
+      history.created_at = new Date();
+      await this.historyRepository.save(history);
+
       return updatedCash;
     } catch (error) {
       handleExceptions(error, this.entityName);
