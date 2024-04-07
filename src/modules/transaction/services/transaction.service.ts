@@ -63,10 +63,12 @@ import { createReadStream, createWriteStream, unlinkSync } from 'fs';
 import * as archiver from 'archiver';
 import { v4 as uuidv4 } from 'uuid';
 import { promisify } from 'util';
-import { pipeline } from 'stream';
+import { pipeline, Readable } from 'stream';
 import { History } from 'src/modules/history/entities/history.entity';
 import { GetPaymentType } from '../helpers/verify-type';
 import { IHistoryResponse } from '../entities/interfaces/history-transaction.interface';
+import { createObjectCsvStringifier } from 'csv-writer';
+import { HeadersCsv } from '../entities/enum/headers-csv.enum';
 
 const streamPipeline = promisify(pipeline);
 @Injectable()
@@ -158,9 +160,9 @@ export class TransactionService
       const subQuery =
         this.transactionRepository.createQueryBuilder('transaction');
       subQuery.select('transaction.id');
-      //conectar facturas
+
       subQuery.leftJoin('transaction.bills', 'bills');
-      // sumar amount de las facturas
+
       subQuery.groupBy('transaction.id');
       subQuery.having(`SUM(bills.amount) >= :total_amount_min`, {
         total_amount_min,
@@ -354,6 +356,97 @@ export class TransactionService
 
     return { data: newData, count, totalPages };
   }
+
+  async exportCsv({
+    filters,
+    page = 1,
+    limit = 20,
+  }: {
+    filters: Partial<FindAllTransactionsAsTreasureDto>;
+    page: number;
+    limit: number;
+  }) {
+    const transactions = await this.findAll({
+      filters,
+      page,
+      limit,
+    });
+
+    const csvStringifier = createObjectCsvStringifier({
+      header: [
+        { id: HeadersCsv.GENERAL_STATUS, title: 'Status General' },
+        { id: HeadersCsv.SKU, title: 'SKU' },
+        { id: HeadersCsv.FECHA, title: 'Fecha' },
+        { id: HeadersCsv.VENDEDOR, title: 'Vendedor' },
+        { id: HeadersCsv.EMPRESA, title: 'Empresa' },
+        { id: HeadersCsv.CLIENTE, title: 'Cliente' },
+        { id: HeadersCsv.MONTO, title: 'Monto' },
+        { id: HeadersCsv.TOTAL_CHEQUES, title: 'Total Cheques' },
+        { id: HeadersCsv.TOTAL_CHEQUES_SUB_ESTADO, title: 'Sub Estado' },
+        { id: HeadersCsv.TOTAL_EFECTIVO, title: 'Total Efectivo' },
+        { id: HeadersCsv.TOTAL_EFECTIVO_SUB_ESTADO, title: 'Sub Estado' },
+        { id: HeadersCsv.TOTAL_DEPO_TRANS, title: 'Total depo /Trans' },
+        { id: HeadersCsv.TOTAL_DEPO_TRANS_SUB_ESTADO, title: 'Sub estado' },
+      ],
+    });
+
+    const parseDate = (date: Date | null) => {
+      if (!date) return '-';
+      const dateObj = new Date(date);
+      dateObj.setHours(dateObj.getHours() - 3); // Adjust to GMT-3
+      const day =
+        dateObj.getDate() < 10 ? `0${dateObj.getDate()}` : dateObj.getDate();
+      const month =
+        dateObj.getMonth() < 9
+          ? `0${dateObj.getMonth() + 1}`
+          : dateObj.getMonth() + 1;
+      return `${day}-${month}-${dateObj.getFullYear()}`;
+    };
+
+    const parseStatus = (status: TRANSACTION_STATUS_ENUM) => {
+      const diccionaryStatus = {
+        [TRANSACTION_STATUS_ENUM.OK]: 'APROBADO',
+        [TRANSACTION_STATUS_ENUM.PENDING]: 'PENDIENTE',
+        [TRANSACTION_STATUS_ENUM.TO_CHANGE]: 'A CAMBIAR',
+        [TRANSACTION_STATUS_ENUM.EDITED]: 'EDITADO',
+      };
+
+      return status ? diccionaryStatus[status] : '-';
+    };
+
+    const data = transactions.data.map((transaction) => {
+      return {
+        [HeadersCsv.GENERAL_STATUS]: parseStatus(transaction.status) || '-',
+        [HeadersCsv.SKU]: transaction.sku || '-',
+        [HeadersCsv.FECHA]: parseDate(transaction.created_at) || '-',
+        [HeadersCsv.VENDEDOR]: transaction.created_by.name || '-',
+        [HeadersCsv.EMPRESA]: transaction.company.name || '-',
+        [HeadersCsv.CLIENTE]: transaction.client.name || '-',
+        [HeadersCsv.MONTO]: transaction.total_amount || '-',
+        [HeadersCsv.TOTAL_CHEQUES]: transaction.total_checks || '-',
+        [HeadersCsv.TOTAL_CHEQUES_SUB_ESTADO]:
+          parseStatus(transaction.check_status) || '-',
+        [HeadersCsv.TOTAL_EFECTIVO]: transaction.total_cash || '-',
+        [HeadersCsv.TOTAL_EFECTIVO_SUB_ESTADO]:
+          parseStatus(transaction.cash_status) || '-',
+        [HeadersCsv.TOTAL_DEPO_TRANS]: transaction.total_deposit || '-',
+        [HeadersCsv.TOTAL_DEPO_TRANS_SUB_ESTADO]:
+          parseStatus(transaction.deposit_status) || '-',
+      };
+    });
+
+    const header = csvStringifier.getHeaderString();
+    const records = csvStringifier.stringifyRecords(data);
+
+    const stream = new Readable();
+
+    stream.push(header);
+    stream.push(records);
+    stream.push(null);
+
+    return stream;
+  }
+
   entityName: string = Transaction.name;
   private readonly itemTransactionRelations: FindOptionsRelations<
     IItemTransaction & LogFields
@@ -413,7 +506,6 @@ export class TransactionService
       ])
       .flat();
 
-    // Descargar los archivos y agregarlos al archivo ZIP
     const zipFileName = `transaction_${transactionId}_${uuidv4()}.zip`;
     const output = createWriteStream(zipFileName);
     const archive = archiver('zip', { zlib: { level: 9 } });
@@ -433,7 +525,6 @@ export class TransactionService
 
     await archive.finalize();
 
-    // Subir el archivo ZIP a S3
     const uploadedZip = await s3
       .upload({
         Bucket: 'importadora-prod',
@@ -442,14 +533,12 @@ export class TransactionService
       })
       .promise();
 
-    // Generar una URL firmada para el archivo ZIP
     const signedUrl = s3.getSignedUrl('getObject', {
       Bucket: 'importadora-prod',
       Key: `zips/${zipFileName}`,
-      Expires: 60 * 5, // URL válida por 5 minutos
+      Expires: 60 * 5,
     });
 
-    // Eliminar el archivo ZIP temporal del servidor
     unlinkSync(zipFileName);
 
     return signedUrl;

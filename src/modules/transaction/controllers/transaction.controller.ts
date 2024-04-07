@@ -7,6 +7,8 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  Res,
+  StreamableFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -35,6 +37,8 @@ import { Transaction } from '../entities/transaction.entity';
 import { FindAllTransactionsAsTreasureDto } from '../dtos/query/find-all-transactions-as-treasure.dto';
 import { FindAllTransactionsDto } from '../dtos/query/find-all-transactions.dto';
 import { ParseTransactionItemFileValidation } from 'src/storage-service/pipe/file-validation.pipe';
+import { Writable } from 'stream';
+import { Response } from 'express';
 @ApiTags('Transaction')
 @ApiUnauthorizedResponseImplementation()
 @ApiBadRequestResponseImplementation()
@@ -108,6 +112,30 @@ export class TransactionController {
     @GetUser() user: User,
   ) {
     return await this.transactionService.findOneById({ id }, user);
+  }
+
+  @ApiOperation({
+    summary: 'Get csv transactions',
+  })
+  @Get('csv')
+  async getTransactionsCsv(
+    @Res({ passthrough: true }) res: Response,
+    @Body() filters: FindAllTransactionsDto,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    const pageNumber = page > 0 ? page : 1;
+    const limitNumber = limit > 0 ? limit : 20;
+    const csvStream = await this.transactionService.exportCsv({
+      filters,
+      page: pageNumber,
+      limit: limitNumber,
+    });
+    res.set({
+      'Content-Type': 'text/csv',
+      'Content-Disposition': 'attachment; filename=transactions.csv',
+    });
+    return new StreamableFile(csvStream);
   }
 
   @ApiOkResponseImplementation({ type: Transaction })

@@ -1,0 +1,15 @@
+export enum HeadersCsv {
+  SKU = 'sku',
+  GENERAL_STATUS = 'Status General',
+  FECHA = 'Fecha',
+  VENDEDOR = 'Vendedor',
+  EMPRESA = 'Empresa',
+  CLIENTE = 'Cliente',
+  MONTO = 'Monto',
+  TOTAL_CHEQUES = 'Total Cheques',
+  TOTAL_CHEQUES_SUB_ESTADO = 'cheques Sub Estado',
+  TOTAL_EFECTIVO = 'Total Efectivo',
+  TOTAL_EFECTIVO_SUB_ESTADO = 'efectivo Sub Estado',
+  TOTAL_DEPO_TRANS = 'Total depo /Trans',
+  TOTAL_DEPO_TRANS_SUB_ESTADO = 'depo/trans Sub estado',
+}
