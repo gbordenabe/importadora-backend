@@ -117,7 +117,7 @@ export class TransactionController {
   @ApiOperation({
     summary: 'Get csv transactions',
   })
-  @Get('csv')
+  @Post('csv')
   async getTransactionsCsv(
     @Res({ passthrough: true }) res: Response,
     @Body() filters: FindAllTransactionsDto,
