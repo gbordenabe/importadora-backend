@@ -13,7 +13,7 @@ export class CreateClientDto {
   @MaxLength(100)
   @AllowNulls()
   @IsOptional()
-  business_name: string;
+  business_name?: string;
 
   //client 100 nullable unique
   @ApiPropertyOptional({ maxLength: 100, nullable: true, uniqueItems: true })
@@ -21,33 +21,33 @@ export class CreateClientDto {
   @MaxLength(100)
   @AllowNulls()
   @IsOptional()
-  client_number: string;
+  client_number?: string;
 
   @ApiPropertyOptional({ maxLength: 100, nullable: true })
   @IsString()
   @MaxLength(100)
   @AllowNulls()
   @IsOptional()
-  cuit_cuil: string;
+  cuit_cuil?: string;
 
   @ApiPropertyOptional({ maxLength: 100, nullable: true })
   @IsString()
   @MaxLength(100)
   @AllowNulls()
   @IsOptional()
-  city: string;
+  city?: string;
 
   @ApiPropertyOptional({ maxLength: 100, nullable: true })
   @IsString()
   @MaxLength(100)
   @AllowNulls()
   @IsOptional()
-  location: string;
+  location?: string;
 
   @ApiPropertyOptional({ maxLength: 100, nullable: true })
   @IsString()
   @MaxLength(100)
   @AllowNulls()
   @IsOptional()
-  province: string;
+  province?: string;
 }

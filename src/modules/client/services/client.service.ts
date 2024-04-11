@@ -118,4 +118,13 @@ export class ClientService
   ): Promise<Client> {
     return this.clientRepository.create(dto);
   }
+
+  async bulkCreation(clients: CreateClientDto[]) {
+    try {
+      await this.clientRepository.save(clients);
+      return 'Clients created successfully.';
+    } catch (error) {
+      handleExceptions(error, this.entityName);
+    }
+  }
 }
