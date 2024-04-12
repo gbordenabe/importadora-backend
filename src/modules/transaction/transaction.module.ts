@@ -76,6 +76,7 @@ import { History } from '../history/entities/history.entity';
     DepositService,
     RetentionService,
   ],
+  exports: [TransactionService],
 })
 export class TransactionModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
