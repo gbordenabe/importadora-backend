@@ -9,6 +9,8 @@ import { CompanyModule } from './modules/company/company.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { BulkCreationModule } from './modules/bulk-creation/bulk-creation.module';
+import { PdfGeneratorModule } from './modules/pdf-generator/pdf-generator.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     AuthModule,
     EmailModule,
     TransactionModule,
+    BulkCreationModule,
+    PdfGeneratorModule,
   ],
   controllers: [],
   providers: [],
