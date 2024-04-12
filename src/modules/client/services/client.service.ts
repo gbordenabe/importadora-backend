@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
+  FindOptionsOrder,
   FindOptionsRelations,
   FindOptionsWhere,
   ILike,
@@ -17,6 +18,8 @@ import {
 
 import { handleExceptions } from 'src/common/errors/handleExceptions';
 import { FindAllClientsQueryDto } from '../dto/find-all-clients-query.dto';
+import { CLIENT_ORDER_BY_ENUM } from '../dto/enum/client-order-by.enum';
+import { ORDER_ENUM } from 'src/common/enum/order.enum.';
 
 @Injectable()
 export class ClientService
@@ -32,15 +35,16 @@ export class ClientService
       page = 1,
       page_size = 20,
       nameFilter,
-      order,
-      order_by,
+      order = ORDER_ENUM.DESC,
+      order_by = CLIENT_ORDER_BY_ENUM.CLIENT_NUMBER,
     } = queryParams;
     const defaultQuery: FindOptionsWhere<Client> = {
       is_active: true,
     };
+
     const [data, count] = await this.clientRepository.findAndCount({
-      skip: (page - 1) * page_size,
-      take: page_size,
+      /* skip: (page - 1) * page_size,
+      take: page_size, */
       where: [
         {
           ...defaultQuery,
@@ -55,11 +59,24 @@ export class ClientService
             : undefined,
         },
       ],
-      order: {
+      /* order: {
         [order_by]: order,
-      },
+      }, */
     });
-    return { data, count };
+
+    data.sort((a, b) => {
+      if (order === 'ASC') {
+        return parseInt(a.client_number) - parseInt(b.client_number);
+      } else {
+        return parseInt(b.client_number) - parseInt(a.client_number);
+      }
+    });
+
+    const start = (page - 1) * page_size;
+    const end = page * page_size;
+    const paginatedData = data.slice(start, end);
+
+    return { data: paginatedData, count };
   }
   entityName: string = Client.name;
   findOneById({ id, relations = true }: IFindOneByIdOptions): Promise<Client> {

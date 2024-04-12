@@ -14,7 +14,6 @@ export class FindAllClientsQueryDto extends BasicQueryParams {
   //order and order_by
   @ApiPropertyOptional({
     enum: CLIENT_ORDER_BY_ENUM,
-    default: CLIENT_ORDER_BY_ENUM.ID,
   })
   @IsEnum(CLIENT_ORDER_BY_ENUM)
   @IsOptional()
