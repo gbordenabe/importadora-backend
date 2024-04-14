@@ -101,6 +101,8 @@ export const setOrderOnQueryBuilder = ({
     [TRANSACTION_ORDER_BY_ENUM.CLIENT_NAME]: 'client.name',
     [TRANSACTION_ORDER_BY_ENUM.COMPANY_NAME]: 'company.name',
     [TRANSACTION_ORDER_BY_ENUM.SKU]: 'transaction.sku',
+    [TRANSACTION_ORDER_BY_ENUM.CLIENT_NUMBER]:
+      'CAST(client.client_number AS UNSIGNED)',
   };
   queryBuilder.orderBy(orderByMap[orderBy], order);
 };
