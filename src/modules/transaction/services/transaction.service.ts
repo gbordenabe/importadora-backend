@@ -772,6 +772,7 @@ export class TransactionService
     const history = await this.historyRepository.find({
       where: { transaction: { id: id } },
       relations: ['created_by', 'created_by.role'],
+      order: { created_at: 'DESC' },
     });
     return history.map((history) => ({
       id: history.id,

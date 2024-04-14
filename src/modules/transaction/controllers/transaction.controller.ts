@@ -150,7 +150,7 @@ export class TransactionController {
   @ApiOkResponseImplementation({ type: Transaction })
   @ApiNotFoundImplementation()
   @ApiForbiddenResponseImplementation()
-  @Auth(ROLE_NAME_ENUM.TREASURER)
+  @Auth(ROLE_NAME_ENUM.TREASURER, ROLE_NAME_ENUM.SELLER)
   @Get('history/:id')
   async getHistoryTransaction(@Param('id') id: number) {
     return await this.transactionService.historysTransactions(id);
