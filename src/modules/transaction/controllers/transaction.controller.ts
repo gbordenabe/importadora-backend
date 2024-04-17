@@ -126,11 +126,22 @@ export class TransactionController {
   ) {
     const pageNumber = page > 0 ? page : 1;
     const limitNumber = limit > 0 ? limit : 20;
-    const csvStream = await this.transactionService.exportCsv({
-      filters,
-      page: pageNumber,
-      limit: limitNumber,
-    });
+    let csvStream;
+
+    for (let i = 1; i <= pageNumber; i++) {
+      const transactions = await this.transactionService.exportCsv({
+        filters,
+        page: i,
+        limit: limitNumber,
+      });
+
+      if (i === 1) {
+        csvStream = transactions;
+      } else {
+        csvStream = csvStream.concat(transactions);
+      }
+    }
+
     res.set({
       'Content-Type': 'text/csv',
       'Content-Disposition': 'attachment; filename=transactions.csv',
