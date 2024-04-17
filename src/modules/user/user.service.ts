@@ -76,8 +76,8 @@ export class UserService
       page_size = 20,
       relations,
       nameFilter,
-      order = ORDER_ENUM.ASC,
-      order_by = USER_ORDER_BY_ENUM.USER_NAME,
+      order,
+      order_by,
       roleId,
     } = queryParams;
     //! pendiente poner valores por defecto en el page y page_size por variables de entorno
