@@ -426,6 +426,14 @@ const example = {
   ],
 };
 
+const traductions = {
+  OWN: 'propio',
+  THIRD_PARTY: 'de terceros',
+  ELECTRONIC: 'electrónico',
+  COMMERCIAL: 'comercial',
+  FINANCIAL: 'financiero',
+};
+
 @Injectable()
 export class PdfGeneratorService {
   constructor(private readonly transactionService: TransactionService) {}
@@ -515,7 +523,7 @@ export class PdfGeneratorService {
               'Adjunto',
             ],
             rows: data.checks.map((check) => [
-              check.type,
+              traductions[check.type],
               check.document_number,
               check.bank_name || '',
               check.amount,
@@ -594,7 +602,7 @@ export class PdfGeneratorService {
           {
             headers: ['Tipo', 'Monto', 'Fecha', 'Observaciones'],
             rows: data.credits.map((credit) => [
-              credit.type,
+              traductions[credit.type],
               credit.amount,
               this.tranformDate(credit.date),
               credit.observation,
