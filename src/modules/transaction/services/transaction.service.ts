@@ -506,7 +506,12 @@ export class TransactionService
       ])
       .flat();
 
-    const zipFileName = `transaction_${transactionId}_${uuidv4()}.zip`;
+    const transaction = await this.transactionRepository.findOne({
+      where: { id: transactionId },
+    });
+    const sku = transaction.sku;
+
+    const zipFileName = `${sku}.zip`;
     const output = createWriteStream(zipFileName);
     const archive = archiver('zip', { zlib: { level: 9 } });
 
