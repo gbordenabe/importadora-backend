@@ -125,22 +125,13 @@ export class TransactionController {
     @Query('limit') limit?: number,
   ) {
     const pageNumber = page > 0 ? page : 1;
-    const limitNumber = limit > 0 ? limit : 20;
-    let csvStream;
+    const limitNumber = limit > 0 ? limit * pageNumber : 20;
 
-    for (let i = 1; i <= pageNumber; i++) {
-      const transactions = await this.transactionService.exportCsv({
-        filters,
-        page: i,
-        limit: limitNumber,
-      });
-
-      if (i === 1) {
-        csvStream = transactions;
-      } else {
-        csvStream = csvStream.concat(transactions);
-      }
-    }
+    const csvStream = await this.transactionService.exportCsv({
+      filters,
+      page: 1,
+      limit: limitNumber,
+    });
 
     res.set({
       'Content-Type': 'text/csv',
