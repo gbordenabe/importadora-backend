@@ -7,12 +7,14 @@ import { ClientService } from '../client/services/client.service';
 export class BulkCreationService {
   constructor(private readonly clientService: ClientService) {}
 
-  createClientsFromCsv(file: Express.Multer.File): Promise<any> {
+  async createClientsFromCsv(file: Express.Multer.File): Promise<any> {
     if (file.mimetype !== 'text/csv') {
       throw new BadRequestException(
         'Invalid file type. Please upload a CSV file.',
       );
     }
+
+    const existingClients = await this.clientService.findAllBulk();
 
     const results = [];
     const clientNumbers = new Set();
@@ -25,15 +27,12 @@ export class BulkCreationService {
       readableStream
         .pipe(csv())
         .on('data', async (data) => {
-          if (!clientNumbers.has(data.Numero)) {
-            // Check if client already exists in the database
-            const clientExists = await this.clientService.clientExists(
-              data.Numero,
-            );
-            if (!clientExists) {
-              clientNumbers.add(data.Numero);
-              results.push(data);
-            }
+          if (
+            !clientNumbers.has(data.Numero) &&
+            !existingClients.includes(data.Numero)
+          ) {
+            clientNumbers.add(data.Numero);
+            results.push(data);
           }
         })
         .on('end', async () => {
