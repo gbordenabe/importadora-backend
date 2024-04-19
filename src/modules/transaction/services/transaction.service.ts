@@ -411,7 +411,7 @@ export class TransactionService
         [TRANSACTION_STATUS_ENUM.EDITED]: 'EDITADO',
       };
 
-      return status ? diccionaryStatus[status] : '-';
+      return status in diccionaryStatus ? diccionaryStatus[status] : '-';
     };
 
     const data = transactions.data.map((transaction) => {
