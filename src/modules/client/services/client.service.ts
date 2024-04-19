@@ -145,10 +145,8 @@ export class ClientService
     }
   }
 
-  async clientExists(clientNumber: string): Promise<boolean> {
-    const client = await this.clientRepository.findOne({
-      where: { client_number: clientNumber },
-    });
-    return !!client;
+  async findAllBulk(): Promise<string[]> {
+    const clients = await this.clientRepository.find();
+    return clients.map((client) => client.client_number);
   }
 }
