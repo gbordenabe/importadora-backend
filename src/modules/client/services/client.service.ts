@@ -144,4 +144,11 @@ export class ClientService
       handleExceptions(error, this.entityName);
     }
   }
+
+  async clientExists(clientNumber: string): Promise<boolean> {
+    const client = await this.clientRepository.findOne({
+      where: { client_number: clientNumber },
+    });
+    return !!client;
+  }
 }

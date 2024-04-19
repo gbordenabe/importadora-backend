@@ -24,10 +24,16 @@ export class BulkCreationService {
     return new Promise((resolve, reject) => {
       readableStream
         .pipe(csv())
-        .on('data', (data) => {
+        .on('data', async (data) => {
           if (!clientNumbers.has(data.Numero)) {
-            clientNumbers.add(data.Numero);
-            results.push(data);
+            // Check if client already exists in the database
+            const clientExists = await this.clientService.clientExists(
+              data.Numero,
+            );
+            if (!clientExists) {
+              clientNumbers.add(data.Numero);
+              results.push(data);
+            }
           }
         })
         .on('end', async () => {
