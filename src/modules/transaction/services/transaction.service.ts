@@ -415,6 +415,10 @@ export class TransactionService
     };
 
     const data = transactions.data.map((transaction) => {
+      const totalCheques = transaction.total_checks || '-';
+      const totalEfectivo = transaction.total_cash || '-';
+      const totalDepoTrans = transaction.total_deposit || '-';
+
       return {
         [HeadersCsv.GENERAL_STATUS]: parseStatus(transaction.status) || '-',
         [HeadersCsv.SKU]: transaction.sku || '-',
@@ -423,15 +427,17 @@ export class TransactionService
         [HeadersCsv.EMPRESA]: transaction.company.name || '-',
         [HeadersCsv.CLIENTE]: transaction.client.name || '-',
         [HeadersCsv.MONTO]: transaction.total_amount || '-',
-        [HeadersCsv.TOTAL_CHEQUES]: transaction.total_checks || '-',
+        [HeadersCsv.TOTAL_CHEQUES]: totalCheques,
         [HeadersCsv.TOTAL_CHEQUES_SUB_ESTADO]:
-          parseStatus(transaction.check_status) || '-',
-        [HeadersCsv.TOTAL_EFECTIVO]: transaction.total_cash || '-',
+          totalCheques !== '-' ? parseStatus(transaction.check_status) : '-',
+        [HeadersCsv.TOTAL_EFECTIVO]: totalEfectivo,
         [HeadersCsv.TOTAL_EFECTIVO_SUB_ESTADO]:
-          parseStatus(transaction.cash_status) || '-',
-        [HeadersCsv.TOTAL_DEPO_TRANS]: transaction.total_deposit || '-',
+          totalEfectivo !== '-' ? parseStatus(transaction.cash_status) : '-',
+        [HeadersCsv.TOTAL_DEPO_TRANS]: totalDepoTrans,
         [HeadersCsv.TOTAL_DEPO_TRANS_SUB_ESTADO]:
-          parseStatus(transaction.deposit_status) || '-',
+          totalDepoTrans !== '-'
+            ? parseStatus(transaction.deposit_status)
+            : '-',
       };
     });
 
