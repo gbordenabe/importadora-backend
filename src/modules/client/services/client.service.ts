@@ -33,7 +33,7 @@ export class ClientService
   async findAll(queryParams: FindAllClientsQueryDto) {
     const {
       page = 1,
-      page_size = 20,
+      page_size,
       nameFilter,
       order = ORDER_ENUM.DESC,
       order_by = CLIENT_ORDER_BY_ENUM.CLIENT_NUMBER,
@@ -43,8 +43,6 @@ export class ClientService
     };
 
     const [data, count] = await this.clientRepository.findAndCount({
-      /* skip: (page - 1) * page_size,
-      take: page_size, */
       where: [
         {
           ...defaultQuery,
@@ -59,9 +57,6 @@ export class ClientService
             : undefined,
         },
       ],
-      /* order: {
-        [order_by]: order,
-      }, */
     });
 
     data.sort((a, b) => {
@@ -71,6 +66,8 @@ export class ClientService
         return parseInt(b.client_number) - parseInt(a.client_number);
       }
     });
+
+    if (!page_size) return { data, count };
 
     const start = (page - 1) * page_size;
     const end = page * page_size;
