@@ -499,10 +499,12 @@ export class TransactionService
 
     const filesNamesTransactions = filesTransactions
       .map((t) => [
-        ...t.cash?.map((c) => c.file.file_name),
-        ...t.deposits?.map((d) => d.file.file_name),
-        ...t.checks?.map((c) => c.file.file_name),
-        ...t.retentions?.map((r) => r.file.file_name),
+        ...(t.cash?.filter((c) => c.file).map((c) => c.file.file_name) || []),
+        ...(t.deposits?.filter((d) => d.file).map((d) => d.file.file_name) ||
+          []),
+        ...(t.checks?.filter((c) => c.file).map((c) => c.file.file_name) || []),
+        ...(t.retentions?.filter((r) => r.file).map((r) => r.file.file_name) ||
+          []),
       ])
       .flat();
 
