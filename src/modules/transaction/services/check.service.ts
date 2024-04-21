@@ -119,6 +119,7 @@ export class CheckService
       this.transactionService,
     );
   }
+
   async updateOneById(
     id: number,
     dto: UpdateCheckDto,
@@ -171,6 +172,7 @@ export class CheckService
       handleExceptions(error, this.entityName);
     }
   }
+
   entityName: string = Check.name;
   relations: FindOptionsRelations<Check> = {
     created_by: userRelations,

@@ -61,8 +61,13 @@ export class StorageService implements OnModuleInit {
     });
     await this.s3Client.send(command);
   }
+
   async replaceFile(data: UploadData, oldFileName: string) {
     await this.uploadFile(data);
-    await this.deleteFile(oldFileName);
+    try {
+      await this.deleteFile(oldFileName);
+    } catch (error) {
+      console.log('Error deleting file', error);
+    }
   }
 }
