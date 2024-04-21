@@ -274,4 +274,15 @@ export class FindAllTransactionsDto {
   @IsEnum(TRANSACTION_ORDER_BY_ENUM)
   @IsOptional()
   order_by: TRANSACTION_ORDER_BY_ENUM;
+
+  @ApiPropertyOptional({
+    type: 'integer',
+    minimum: 1,
+    isArray: true,
+  })
+  @IsInt({ each: true })
+  @Min(1, { each: true })
+  @IsArray()
+  @IsOptional()
+  sellers: number[] = [];
 }
