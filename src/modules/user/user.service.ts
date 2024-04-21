@@ -70,6 +70,7 @@ export class UserService
       handleExceptions(error, this.entityName);
     }
   }
+
   async findAll(queryParams: FindAllUsersQueryDto) {
     const {
       page = 1,
@@ -81,19 +82,26 @@ export class UserService
       roleId,
     } = queryParams;
     //! pendiente poner valores por defecto en el page y page_size por variables de entorno
-    const [data, count] = await this.userRepository.findAndCount({
-      where: {
-        is_active: true,
-        role: roleId ? { id: roleId } : undefined,
-        name: nameFilter ? ILike(`%${nameFilter.toLowerCase()}%`) : undefined,
-      },
-      order: {
-        [order_by]: order,
-      },
-      take: page_size,
-      skip: (page - 1) * page_size,
-      relations: convertOptionalBooleanString(relations) ? this.relations : [],
-    });
+    const query = this.userRepository.createQueryBuilder('user');
+
+    if (nameFilter) {
+      query.where(
+        'user.name ILIKE :nameFilter OR user.user_name ILIKE :nameFilter',
+        { nameFilter: `%${nameFilter.toLowerCase()}%` },
+      );
+    }
+
+    if (roleId) {
+      query.andWhere('user.role_id = :roleId', { roleId });
+    }
+
+    query.orderBy(`user.${order_by}`, order);
+
+    query.skip((page - 1) * page_size);
+
+    query.take(page_size);
+
+    const [data, count] = await query.getManyAndCount();
     return { data, count };
   }
 
