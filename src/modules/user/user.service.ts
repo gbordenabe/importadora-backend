@@ -95,7 +95,9 @@ export class UserService
       query.andWhere('user.role_id = :roleId', { roleId });
     }
 
-    query.orderBy(`user.${order_by}`, order);
+    if (order_by && ['valid', 'column', 'names'].includes(order_by)) {
+      query.orderBy(`user.${order_by}`, order);
+    }
 
     query.skip((page - 1) * page_size);
 
