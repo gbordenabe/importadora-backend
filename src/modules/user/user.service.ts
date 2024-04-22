@@ -99,6 +99,14 @@ export class UserService
       query.orderBy(`user.${order_by}`, order);
     }
 
+    const allRelations = ['verification_codes', 'transactions', 'role'];
+
+    if (relations) {
+      allRelations.forEach((relation) => {
+        query.leftJoinAndSelect(`user.${relation}`, relation);
+      });
+    }
+
     query.skip((page - 1) * page_size);
 
     query.take(page_size);
