@@ -7,6 +7,8 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreditNoteService } from '../services/credit-note.service';
 import { Auth, GetUser } from 'src/auth/decorators';
@@ -24,6 +26,7 @@ import { ROLE_NAME_ENUM } from 'src/modules/role/entities/role_name.enum';
 import { UpdateCreditNoteDto } from '../dtos/update/update-credit-note.dto';
 import { TRANSACTION_STATUS_ENUM } from '../entities/enum/transaction-status-.enum';
 import { ItemRequestToChangeDto } from '../dtos/update/item-request-to-change.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('CreditNote')
 @ApiBadRequestResponseImplementation()
@@ -73,9 +76,11 @@ export class CreditNoteController {
   @ApiForbiddenResponseImplementation()
   @Auth(ROLE_NAME_ENUM.TREASURER)
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('file'))
   async updateOneById(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateCreditNoteDto,
+    @UploadedFile() file: Express.Multer.File,
     @GetUser() requestUser: User,
   ) {
     return await this.creditNoteService.updateOneById(id, dto, {

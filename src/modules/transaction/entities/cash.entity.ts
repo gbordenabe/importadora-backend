@@ -36,6 +36,7 @@ export class Cash extends Payment implements IItemTransactionWithFile {
   @ManyToMany(() => History, { cascade: true })
   @JoinTable()
   historical: History[];
+  bank_name: null;
 
   @BeforeUpdate()
   setDataBeforeUpdateOnHistorical(): void {

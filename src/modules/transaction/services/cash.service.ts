@@ -121,6 +121,7 @@ export class CashService
     if (!cash) throw new NotFoundException('Cash not found');
     return cash;
   }
+
   async updateOneById(
     id: number,
     dto: UpdateCashDto,
@@ -133,6 +134,11 @@ export class CashService
     );
     const dtoVerified = await this.getAndVerifyDto(dto);
     if (file) dtoVerified.file = getFileEntity(file);
+    if (dto.bank_name === 'null') {
+      dtoVerified.bank_name = null;
+    } else {
+      dtoVerified.bank_name = dto.bank_name as null;
+    }
     setLogs({
       entity: dtoVerified,
       updatedBy: requestUser,
@@ -173,6 +179,7 @@ export class CashService
       handleExceptions(error, this.entityName);
     }
   }
+
   entityName: string = Cash.name;
   relations: FindOptionsRelations<Cash> = {
     created_by: userRelations,

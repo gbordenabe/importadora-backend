@@ -5,4 +5,5 @@ import { IsEmpty } from 'class-validator';
 export class UpdateCashDto extends PartialType(CreateCashDto) {
   /* @IsEmpty() */
   file_field_name?: string;
+  bank_name?;
 }

@@ -7,6 +7,8 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { BillService } from '../services/bill.service';
 import { Auth, GetUser } from 'src/auth/decorators';
@@ -24,6 +26,7 @@ import { ROLE_NAME_ENUM } from 'src/modules/role/entities/role_name.enum';
 import { UpdateBillDto } from '../dtos/update/update-bill.dto';
 import { TRANSACTION_STATUS_ENUM } from '../entities/enum/transaction-status-.enum';
 import { ItemRequestToChangeDto } from '../dtos/update/item-request-to-change.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Bill')
 @ApiBadRequestResponseImplementation()
@@ -73,8 +76,10 @@ export class BillController {
   @ApiForbiddenResponseImplementation()
   @Auth(ROLE_NAME_ENUM.TREASURER)
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('file'))
   async updateOneById(
     @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File,
     @Body() dto: UpdateBillDto,
     @GetUser() requestUser: User,
   ) {

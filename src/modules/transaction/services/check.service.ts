@@ -131,7 +131,17 @@ export class CheckService
       isAdministrator ? null : requestUser,
     );
     const dtoVerified = await this.getAndVerifyDto(dto);
-    if (file) dtoVerified.file = getFileEntity(file);
+    if (file) {
+      const fileEntity = getFileEntity(file);
+      dtoVerified.file = fileEntity ? fileEntity : null;
+    } else {
+      dtoVerified.file = null;
+    }
+    if (dto.bank_name === 'null') {
+      dtoVerified.bank_name = null;
+    } else {
+      dtoVerified.bank_name = dto.bank_name;
+    }
     setLogs({
       entity: dtoVerified,
       updatedBy: requestUser,

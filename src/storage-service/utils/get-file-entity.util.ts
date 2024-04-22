@@ -1,6 +1,9 @@
 import { File } from 'src/storage-service/entities/file.entity';
 
 export function getFileEntity(file: Express.Multer.File) {
+  if (!file) {
+    return null;
+  }
   return {
     file_name: (
       file.originalname.split('.')[0] +
