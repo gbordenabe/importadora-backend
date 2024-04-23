@@ -74,7 +74,7 @@ export class UserService
   async findAll(queryParams: FindAllUsersQueryDto) {
     const {
       page = 1,
-      page_size = 20,
+      page_size,
       relations,
       nameFilter,
       order,
@@ -107,9 +107,10 @@ export class UserService
       });
     }
 
-    query.skip((page - 1) * page_size);
-
-    query.take(page_size);
+    if (page_size) {
+      query.skip((page - 1) * page_size);
+      query.take(page_size);
+    }
 
     const [data, count] = await query.getManyAndCount();
     return { data, count };
